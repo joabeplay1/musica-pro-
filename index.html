@@ -1,136 +1,132 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifiquei | App Funcional</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-deep: #0f172a;
-            --sidebar-color: rgba(30, 41, 59, 0.7);
-            --card-glass: rgba(255, 255, 255, 0.05);
-            --accent-blue: #0ea5e9;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+    <title>Bowling Kingdom Style</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "oimo": "https://unpkg.com/oimo@1.0.9/build/oimo.module.js"
+            }
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-deep); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
-
-        /* Sidebar */
-        .sidebar { width: 260px; background: var(--sidebar-color); backdrop-filter: blur(15px); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; }
-        .nav-item { padding: 12px; color: var(--text-secondary); text-decoration: none; display: flex; gap: 10px; cursor: pointer; border-radius: 8px; }
-        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
-
-        /* Main */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0; }
-        .card { background: var(--card-glass); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        /* Tabela */
-        .panel { background: var(--card-glass); padding: 20px; border-radius: 16px; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .status { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-
-        /* Modal */
-        #modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 100;
-        }
-        .modal-content { background: #1e293b; padding: 30px; border-radius: 16px; width: 400px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; }
-        .btn { background: var(--accent-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; }
-    </style>
+    </script>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h2>🔔 Notifiquei</h2><br>
-        <div class="nav-item active" onclick="filtrar('Todos')">Todos</div>
-        <div class="nav-item" onclick="filtrar('E-mail')">E-mail</div>
-        <div class="nav-item" onclick="filtrar('WhatsApp')">WhatsApp</div>
-    </aside>
+    <div id="game-container"></div>
 
-    <main class="main-content">
-        <header style="display:flex; justify-content:space-between;">
-            <h1>Dashboard</h1>
-            <button class="btn" style="width:auto" onclick="abrirModal()">CRIAR NOTIFICAÇÃO</button>
+    <div id="ui-layer">
+
+        <header class="top-nav">
+            <div class="logo">
+                <img src="assets/textures/logo.png" alt="Bowling Kingdom">
+            </div>
+            <div class="player-profile">
+                <img src="assets/textures/avatar_alex.png" alt="Alex" class="avatar">
+                <div class="info">
+                    <span class="name">Alex (Level 12)</span>
+                    <span class="stats">🏆 215 | Game 3 | High: 288</span>
+                </div>
+            </div>
+            <nav class="main-menu">
+                <button>Home</button>
+                <button class="active">Play</button>
+                <button>Tournaments</button>
+                <button>Profile</button>
+                <button class="store-btn">Store</button>
+            </nav>
+            <div class="top-actions">
+                <button class="icon-btn">⚙️</button>
+                <button class="icon-btn">🔊</button>
+            </div>
         </header>
 
-        <section class="metrics-grid">
-            <div class="card"><h3>Enviadas</h3><div id="val1" class="value">24500</div><canvas id="c1" height="60"></canvas></div>
-            <div class="card"><h3>Abertura</h3><div id="val2" class="value">78%</div><canvas id="c2" height="60"></canvas></div>
-        </section>
-
-        <section class="panel">
-            <h3>Últimas Notificações</h3>
-            <table id="tabela-corpo">
-                <thead><tr><th>Título</th><th>Canal</th><th>Status</th></tr></thead>
-                <tbody></tbody>
+        <aside class="scoreboard-container">
+            <table class="scoreboard">
+                <thead>
+                    <tr>
+                        <th>P1</th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                        <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                    }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="player-name">Alex</td>
+                        <td><div class="f-top">1</div><div class="f-bot">18</div></td>
+                        <td><div class="f-top">3 /</div><div class="f-bot">18</div></td>
+                        <td><div class="f-top">6 /</div><div class="f-bot">45</div></td>
+                        <td><div class="f-top">7 /</div><div class="f-bot">78</div></td>
+                        <td><div class="f-top">3 </div><div class="f-bot">78</div></td>
+                        <td class="total">215</td>
+                    </tr>
+                </tbody>
             </table>
-        </section>
-    </main>
+        </aside>
 
-    <div id="modal">
-        <div class="modal-content">
-            <h3>Nova Notificação</h3>
-            <input type="text" id="titulo" placeholder="Título da mensagem">
-            <select id="canal">
-                <option value="E-mail">E-mail</option>
-                <option value="WhatsApp">WhatsApp</option>
-            </select>
-            <button class="btn" onclick="salvarNotificacao()">Salvar</button>
-            <button class="btn" style="background:gray; margin-top:5px" onclick="fecharModal()">Cancelar</button>
-        </div>
+        <aside class="side-panel">
+            <div class="panel-box opponent">
+                <h3>OPPONENT INFO</h3>
+                <div class="opp-flex">
+                    <img src="assets/textures/avatar_sara.png" alt="Sara">
+                    <div>
+                        <p>Sara</p>
+                        <p>Lvl 10</p>
+                        <p>Score: 198</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-box tournaments">
+                <h3>UPCOMING TOURNAMENTS</h3>
+                <p>🏆 Kingdom Open</p>
+                <p class="time">Registration 2d</p>
+            </div>
+            <div class="panel-box challenges">
+                <h3>DAILY CHALLENGES</h3>
+                <p>Get 3 strikes <span class="progress">1/3</span></p>
+                <div class="progress-bar"><div class="fill" style="width: 33%"></div></div>
+            </div>
+            <div class="panel-box chat">
+                <h3>CHAT</h3>
+                <div class="chat-messages">
+                    <p><span class="sara">Sara:</span> Great frame!</p>
+                    <p><span class="alex">Alex:</span> Thanks!</p>
+                </div>
+                <input type="text" placeholder="Type here...">
+            </div>
+        </aside>
+
+        <footer class="game-controls">
+            <div class="control-group physics-controls">
+                <div class="power-meter">
+                    <label>POWER</label>
+                    <input type="range" id="power-slider" min="0" max="100" value="88">
+                    <span class="power-val">88%</span>
+                </div>
+                <div class="spin-control">
+                    <button class="spin-btn">🌀</button>
+                    <div class="ball-aim">
+                        <img src="assets/textures/ball_icon.png" alt="Ball">
+                        <div class="aim-arrow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-secondary">SELECT BALL</button>
+                <button class="btn-primary" id="throw-btn">THROW</button>
+                <button class="btn-secondary">HINTS</button>
+                <button class="btn-secondary">CHAT</button>
+            </div>
+        </footer>
+
     </div>
 
-    <script>
-        let dados = [
-            { titulo: 'Bem-vindo', canal: 'E-mail', status: 'Enviado' },
-            { titulo: 'Promoção', canal: 'WhatsApp', status: 'Enviado' }
-        ];
-
-        // 1. Renderizar Tabela
-        function renderTabela(filtro = 'Todos') {
-            const corpo = document.querySelector('#tabela-corpo tbody');
-            corpo.innerHTML = '';
-            dados.filter(d => filtro === 'Todos' || d.canal === filtro).forEach(d => {
-                corpo.innerHTML += `<tr><td>${d.titulo}</td><td>${d.canal}</td><td><span class="status">${d.status}</span></td></tr>`;
-            });
-        }
-
-        // 2. Modal
-        function abrirModal() { document.getElementById('modal').style.display = 'flex'; }
-        function fecharModal() { document.getElementById('modal').style.display = 'none'; }
-        
-        function salvarNotificacao() {
-            const t = document.getElementById('titulo').value;
-            const c = document.getElementById('canal').value;
-            if(t) {
-                dados.push({ titulo: t, canal: c, status: 'Enviado' });
-                renderTabela();
-                fecharModal();
-                document.getElementById('titulo').value = '';
-            }
-        }
-
-        // 3. Filtros
-        function filtrar(canal) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.target.classList.add('active');
-            renderTabela(canal);
-        }
-
-        // 4. Simulador
-        setInterval(() => {
-            const v1 = document.getElementById('val1');
-            v1.innerText = (parseInt(v1.innerText) + Math.floor(Math.random() * 5)).toString();
-        }, 3000);
-
-        renderTabela();
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
