@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Melody Music Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2 class="logo">Melody 🎵</h2>
+            <div class="upload-area">
+                <p class="section-title">POSTAR MÚSICA</p>
+                <input type="text" id="titulo" placeholder="Título...">
+                <textarea id="sinopse" placeholder="Sinopse da música..." rows="2"></textarea>
+                <label class="file-btn">📸 Capa <input type="file" id="foto" accept="image/*" hidden></label>
+                <label class="file-btn">🎵 Áudio <input type="file" id="audio" accept="audio/*" hidden></label>
+                <button id="btnPostar">Publicar Música</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar músicas, artistas, álbuns...">
+            </div>
+
+            <section class="banner">
+                <div class="banner-info">
+                    <span class="tag">LANÇAMENTO</span>
+                    <h1>Novidades da Semana</h1>
+                    <button class="btn-primary">Ouvir agora</button>
+                </div>
+            </section>
+
+            <section class="feed-section">
+                <h3>Suas Postagens</h3>
+                <div id="musicGrid" class="music-grid">
+                    </div>
+            </section>
+        </main>
+
+        <aside class="right-panel">
+            <div class="now-playing-card">
+                <p class="section-title">TOCANDO AGORA</p>
+                <div id="displayCapa" class="display-capa"></div>
+                <h4 id="displayTitulo">Nenhuma música</h4>
+                <p id="displaySinopse">Selecione uma música no feed</p>
+            </div>
+            <div class="player-controls">
+                <audio id="mainPlayer" controls></audio>
+            </div>
+        </aside>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
