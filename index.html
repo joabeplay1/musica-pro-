@@ -1,56 +1,274 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Melody Music Player</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melody Player</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #0b0b0f;
+    --card: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.08);
+    --purple: #8b5cf6;
+    --text: #fff;
+    --gray: #a1a1aa;
+}
+
+/* RESET */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+}
+
+/* GRID */
+.app {
+    display: grid;
+    grid-template-columns: 240px 1fr 320px;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    background: #111114;
+    padding: 20px;
+    border-right: 1px solid var(--border);
+}
+
+.logo {
+    color: var(--purple);
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu a {
+    color: var(--gray);
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: .2s;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: var(--card);
+    color: white;
+}
+
+/* MAIN */
+.main {
+    padding: 25px;
+    overflow-y: auto;
+}
+
+/* SEARCH */
+.search {
+    background: #1a1a1f;
+    padding: 12px;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* BANNER */
+.banner {
+    height: 220px;
+    border-radius: 20px;
+    padding: 30px;
+    background: linear-gradient(90deg, #6d28d9, #9333ea),
+                url('https://images.unsplash.com/photo-1511379938547-c1f69419868d');
+    background-size: cover;
+    background-blend-mode: overlay;
+    display: flex;
+    align-items: center;
+}
+
+.banner h1 {
+    font-size: 32px;
+}
+
+.banner button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: var(--purple);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+/* GRID MUSIC */
+.grid {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 15px;
+    transition: .3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.08);
+}
+
+/* IMAGEM */
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* BOTÃO PLAY */
+.play-btn {
+    position: absolute;
+    bottom: 60px;
+    right: 15px;
+    background: var(--purple);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: .3s;
+}
+
+.card:hover .play-btn {
+    opacity: 1;
+}
+
+/* TEXTO */
+.card h4 {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.card p {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+/* RIGHT PANEL */
+.right {
+    background: #111114;
+    padding: 20px;
+    border-left: 1px solid var(--border);
+}
+
+/* PLAYER */
+.player {
+    text-align: center;
+}
+
+.cover {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    background: #222;
+    margin-bottom: 15px;
+}
+
+audio {
+    width: 100%;
+    margin-top: 15px;
+    filter: invert(1);
+}
+
+/* SCROLL */
+.main::-webkit-scrollbar {
+    width: 6px;
+}
+.main::-webkit-scrollbar-thumb {
+    background: var(--purple);
+    border-radius: 10px;
+}
+</style>
 </head>
+
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <h2 class="logo">Melody 🎵</h2>
-            <div class="upload-area">
-                <p class="section-title">POSTAR MÚSICA</p>
-                <input type="text" id="titulo" placeholder="Título...">
-                <textarea id="sinopse" placeholder="Sinopse da música..." rows="2"></textarea>
-                <label class="file-btn">📸 Capa <input type="file" id="foto" accept="image/*" hidden></label>
-                <label class="file-btn">🎵 Áudio <input type="file" id="audio" accept="audio/*" hidden></label>
-                <button id="btnPostar">Publicar Música</button>
-            </div>
-        </aside>
 
-        <main class="main-content">
-            <div class="search-bar">
-                <input type="text" placeholder="Buscar músicas, artistas, álbuns...">
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">🎵 Melody</h2>
+
+        <nav class="menu">
+            <a href="#" class="active">Início</a>
+            <a href="#">Explorar</a>
+            <a href="#">Rádios</a>
+            <a href="#">Playlists</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <input class="search" placeholder="Buscar músicas...">
+
+        <div class="banner">
+            <div>
+                <span>LANÇAMENTO</span>
+                <h1>Novidades da Semana</h1>
+                <button>Ouvir agora</button>
+            </div>
+        </div>
+
+        <div class="grid">
+
+            <div class="card">
+                <img src="https://picsum.photos/200">
+                <div class="play-btn">▶</div>
+                <h4>Daily Mix</h4>
+                <p>The Weeknd</p>
             </div>
 
-            <section class="banner">
-                <div class="banner-info">
-                    <span class="tag">LANÇAMENTO</span>
-                    <h1>Novidades da Semana</h1>
-                    <button class="btn-primary">Ouvir agora</button>
-                </div>
-            </section>
-
-            <section class="feed-section">
-                <h3>Suas Postagens</h3>
-                <div id="musicGrid" class="music-grid">
-                    </div>
-            </section>
-        </main>
-
-        <aside class="right-panel">
-            <div class="now-playing-card">
-                <p class="section-title">TOCANDO AGORA</p>
-                <div id="displayCapa" class="display-capa"></div>
-                <h4 id="displayTitulo">Nenhuma música</h4>
-                <p id="displaySinopse">Selecione uma música no feed</p>
+            <div class="card">
+                <img src="https://picsum.photos/201">
+                <div class="play-btn">▶</div>
+                <h4>Relax</h4>
+                <p>Chill Music</p>
             </div>
-            <div class="player-controls">
-                <audio id="mainPlayer" controls></audio>
-            </div>
-        </aside>
-    </div>
-    <script src="script.js"></script>
+
+        </div>
+
+    </main>
+
+    <!-- RIGHT -->
+    <aside class="right">
+        <div class="player">
+            <div class="cover"></div>
+            <h3>Nenhuma música</h3>
+            <p>Selecione uma música</p>
+            <audio controls></audio>
+        </div>
+    </aside>
+
+</div>
+
 </body>
 </html>
