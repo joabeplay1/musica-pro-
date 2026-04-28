@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoundWave - Seu Player Local</title>
+    <title>Jesus Reina - Player Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* CSS GLOBAL E CORES */
+        /* --- CSS: Estilos e Cores --- */
         :root {
-            --bg-body: #111111; /* Preto profundo */
-            --bg-card: #1a1a1a; /* Cinza muito escuro */
-            --bg-modal: #222222; /* Cinza escuro para modal */
+            --bg-body: #111111;
+            --bg-card: #1a1a1a;
+            --bg-modal: #222222;
             --text-main: #ffffff;
             --text-muted: #aaaaaa;
-            --purple-main: #7e3ef8; /* Roxo vibrante */
+            --purple-main: #7e3ef8;
             --purple-hover: #9c68f7;
             --border-radius-main: 12px;
             --border-radius-btn: 5px;
@@ -35,14 +35,13 @@
             overflow: hidden;
         }
 
-        /* CONTAINER PRINCIPAL DO APP */
         .app-container {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
-        /* BARRA LATERAL ESQUERDA (SIDEBAR) */
+        /* BARRA LATERAL (SIDEBAR) */
         .sidebar {
             width: 250px;
             background-color: var(--bg-body);
@@ -62,9 +61,7 @@
             margin-bottom: 40px;
         }
 
-        .logo i {
-            color: var(--purple-main);
-        }
+        .logo i { color: var(--purple-main); }
 
         .main-nav ul {
             list-style: none;
@@ -83,11 +80,8 @@
             transition: color 0.2s;
         }
 
-        .main-nav a:hover, .main-nav li.active a {
-            color: var(--text-main);
-        }
+        .main-nav a:hover, .main-nav li.active a { color: var(--text-main); }
 
-        /* BOTÃO ORIGINAL: 'Adicionar Nova Música' na Sidebar */
         .add-btn-sidebar {
             background: none;
             border: none;
@@ -103,12 +97,10 @@
             gap: 15px;
         }
 
-        .add-btn-sidebar:hover {
-            color: var(--text-main);
-        }
+        .add-btn-sidebar:hover { color: var(--text-main); }
 
         .playlists-section {
-            margin-top: auto; /* Empurra para o final da sidebar */
+            margin-top: auto;
             margin-bottom: 20px;
         }
 
@@ -122,7 +114,6 @@
             margin-bottom: 15px;
         }
 
-        /* BOTÃO ORIGINAL: 'Adicionar Música' como Ícone + nas Playlists */
         .add-btn-icon {
             background: none;
             border: none;
@@ -132,9 +123,7 @@
             transition: color 0.2s;
         }
 
-        .add-btn-icon:hover {
-            color: var(--text-main);
-        }
+        .add-btn-icon:hover { color: var(--text-main); }
 
         .playlist-list {
             list-style: none;
@@ -152,15 +141,13 @@
             cursor: pointer;
         }
 
-        .playlist-item:hover {
-            color: var(--text-main);
-        }
+        .playlist-item:hover { color: var(--text-main); }
 
         .playlist-item img {
             width: 35px;
             height: 35px;
             border-radius: 5px;
-            background-color: #333; /* Placeholder */
+            background-color: #333;
         }
 
         .premium-box {
@@ -171,10 +158,7 @@
             text-align: center;
         }
 
-        .premium-box h4 {
-            margin-bottom: 10px;
-        }
-
+        .premium-box h4 { margin-bottom: 10px; }
         .premium-box p {
             color: var(--text-muted);
             font-size: 0.8rem;
@@ -192,16 +176,14 @@
             transition: background 0.2s;
         }
 
-        .premium-btn:hover {
-            background-color: var(--purple-hover);
-        }
+        .premium-btn:hover { background-color: var(--purple-hover); }
 
-        /* CONTEÚDO PRINCIPAL (MAIN) */
+        /* CONTEÚDO PRINCIPAL */
         .content {
             flex: 1;
             background-color: var(--bg-body);
             padding: 30px;
-            overflow-y: auto; /* Permite rolar o conteúdo */
+            overflow-y: auto;
         }
 
         .top-bar {
@@ -247,9 +229,9 @@
             width: 35px;
             height: 35px;
             border-radius: 50%;
+            background-color: #333;
         }
 
-        /* BANNER DE DESTAQUE (JAYLON) */
         .highlight-banner {
             display: flex;
             align-items: center;
@@ -260,9 +242,7 @@
             gap: 40px;
         }
 
-        .banner-text {
-            flex: 1;
-        }
+        .banner-text { flex: 1; }
 
         .banner-tag {
             color: var(--purple-main);
@@ -299,10 +279,6 @@
             border: none;
         }
 
-        .banner-btn-listen i {
-            margin-right: 10px;
-        }
-
         .banner-btn-save {
             background: none;
             border: 1px solid var(--text-muted);
@@ -313,9 +289,7 @@
             width: 200px;
             height: 200px;
             border-radius: var(--border-radius-main);
-            background-image: url('path/to/jaylon-cover.png'); /* Placeholder */
-            background-size: cover;
-            background-position: center;
+            background-color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -330,20 +304,13 @@
             right: 20px;
         }
 
-        /* SEÇÕES DE CARROSSEL (Feito para você, Lançamentos, Playlists) */
-        .section-container {
-            margin-bottom: 30px;
-        }
+        .section-container { margin-bottom: 30px; }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
         }
 
         .section-header a {
@@ -355,8 +322,8 @@
         .carousel-container {
             display: flex;
             gap: 20px;
-            overflow-x: auto; /* Permite rolar na horizontal */
-            padding-bottom: 10px; /* Evita cortar a sombra */
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
 
         .media-card {
@@ -379,9 +346,7 @@
             width: 100%;
             height: 180px;
             border-radius: var(--border-radius-main);
-            background-color: #333; /* Placeholder */
-            background-size: cover;
-            background-position: center;
+            background-color: #444;
             margin-bottom: 15px;
             display: flex;
             justify-content: center;
@@ -406,9 +371,7 @@
             transition: opacity 0.2s;
         }
 
-        .media-card:hover .card-play-icon {
-            opacity: 1;
-        }
+        .media-card:hover .card-play-icon { opacity: 1; }
 
         .card-title {
             font-weight: bold;
@@ -422,18 +385,16 @@
         .card-desc {
             color: var(--text-muted);
             font-size: 0.8rem;
-            margin-bottom: 3px;
         }
 
-        /* SEÇÃO ADICIONAL: Biblioteca Local do PC (Onde ficará sua lista) */
-        .biblioteca-local {
-            margin-bottom: 30px;
-        }
+        /* BIBLIOTECA LOCAL (Lista) */
+        .biblioteca-local { margin-bottom: 30px; }
 
         .lista-musicas {
             background-color: var(--bg-card);
             border-radius: var(--border-radius-main);
             padding: 20px;
+            min-height: 100px;
         }
 
         .lista-musicas ul {
@@ -444,25 +405,26 @@
         }
 
         .lista-musicas li {
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #222;
             border-radius: var(--border-radius-btn);
             cursor: pointer;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .lista-musicas li:hover {
-            background-color: #333;
-        }
+        .lista-musicas li:hover { background-color: #333; }
 
-        /* PLAYER DE RODAPÉ PERSISTENTE */
+        /* PLAYER DE RODAPÉ */
         .footer-player {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             height: 90px;
-            background-color: rgba(17, 17, 17, 0.95); /* Semi-transparente */
+            background-color: rgba(17, 17, 17, 0.95);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -482,18 +444,11 @@
             width: 50px;
             height: 50px;
             border-radius: 5px;
-            background-color: #333; /* Placeholder */
+            background-color: #333;
         }
 
-        .track-info .track-title {
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .track-info .track-artist {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
+        .track-info .track-title { font-weight: bold; font-size: 1rem; }
+        .track-info .track-artist { color: var(--text-muted); font-size: 0.8rem; }
 
         .heart-btn {
             background: none;
@@ -501,10 +456,6 @@
             color: var(--text-muted);
             cursor: pointer;
             font-size: 1.1rem;
-        }
-
-        .heart-btn:hover, .heart-btn.active i {
-            color: var(--purple-main);
         }
 
         .player-controls {
@@ -532,14 +483,9 @@
             transition: color 0.2s;
         }
 
-        .central-controls button:hover {
-            color: var(--text-main);
-        }
+        .central-controls button:hover { color: var(--text-main); }
 
-        /* BOTÕES ORIGINAIS: Adaptados */
-        #btn-anterior, #btn-proxima {
-            font-size: 1.2rem;
-        }
+        #btn-anterior, #btn-proxima { font-size: 1.2rem; }
 
         #btn-play-pause {
             background-color: var(--purple-main);
@@ -554,9 +500,7 @@
             transition: background 0.2s;
         }
 
-        #btn-play-pause:hover {
-            background-color: var(--purple-hover);
-        }
+        #btn-play-pause:hover { background-color: var(--purple-hover); }
 
         .progress-bar-container {
             display: flex;
@@ -567,7 +511,6 @@
             font-size: 0.8rem;
         }
 
-        /* BARRA DE PROGRESSO ORIGINAL: Adaptada */
         #progresso {
             flex: 1;
             height: 5px;
@@ -584,11 +527,6 @@
             height: 12px;
             background: var(--purple-main);
             border-radius: 50%;
-            transition: background 0.2s;
-        }
-
-        #progresso::-webkit-slider-thumb:hover {
-            background: var(--purple-hover);
         }
 
         .player-volume {
@@ -605,18 +543,9 @@
             border: none;
             color: inherit;
             cursor: pointer;
-            font-size: 1rem;
         }
 
-        .player-volume button:hover {
-            color: var(--text-main);
-        }
-
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .volume-control { display: flex; align-items: center; gap: 8px; }
 
         .volume-bar {
             width: 100px;
@@ -625,7 +554,6 @@
             background: #333;
             border-radius: 3px;
             outline: none;
-            cursor: pointer;
         }
 
         .volume-bar::-webkit-slider-thumb {
@@ -636,14 +564,14 @@
             border-radius: 50%;
         }
 
-        /* MODAL ADICIONAR MÚSICA (Janela Flutuante) */
+        /* MODAL ADICIONAR MÚSICA */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); /* Fundo escurecido */
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -674,9 +602,7 @@
             cursor: pointer;
         }
 
-        .close-btn:hover {
-            color: var(--text-main);
-        }
+        .close-btn:hover { color: var(--text-main); }
 
         #form-musica {
             display: flex;
@@ -684,10 +610,7 @@
             gap: 15px;
         }
 
-        #form-musica label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
+        #form-musica label { font-size: 0.9rem; color: var(--text-muted); }
 
         #form-musica input, #form-musica textarea {
             background-color: #1a1a1a;
@@ -723,10 +646,6 @@
             border: none;
         }
 
-        .save-btn:hover {
-            background-color: var(--purple-hover);
-        }
-
         .cancel-btn {
             background: none;
             border: 1px solid var(--text-muted);
@@ -740,19 +659,13 @@
         <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-wave-square"></i>
-                <span>SoundWave</span>
+                <span>Jesus Reina</span>
             </div>
             <nav class="main-nav">
                 <ul>
                     <li class="active"><a href="#"><i class="fas fa-home"></i> Início</a></li>
-                    <li><a href="#"><i class="fas fa-compass"></i> Explorar</a></li>
                     <li><a href="#"><i class="fas fa-search"></i> Buscar</a></li>
                     <li><a href="#"><i class="fas fa-book-open"></i> Sua Biblioteca</a></li>
-                    <li><a href="#"><i class="fas fa-list"></i> Playlists</a></li>
-                    <li><a href="#"><i class="fas fa-user"></i> Artistas</a></li>
-                    <li><a href="#"><i class="fas fa-compact-disc"></i> Álbuns</a></li>
-                    <li><a href="#"><i class="fas fa-podcast"></i> Podcasts</a></li>
-                    
                     <li>
                         <button class="add-btn-sidebar" id="btn-abrir-modal-sidebar">
                             <i class="fas fa-plus"></i> Adicionar Música do PC
@@ -769,18 +682,9 @@
                     </button>
                 </div>
                 <ul class="playlist-list">
-                    <li class="playlist-item"><img src="path/to/img1.png" alt="Top Brasil"><span>Top Brasil</span></li>
-                    <li class="playlist-item"><img src="path/to/img2.png" alt="Vibes"><span>Vibes</span></li>
-                    <li class="playlist-item"><img src="path/to/img3.png" alt="Treino"><span>Treino</span></li>
-                    <li class="playlist-item"><img src="path/to/img4.png" alt="Focus"><span>Focus</span></li>
-                    <li class="playlist-item"><img src="path/to/img5.png" alt="Chill"><span>Chill</span></li>
+                    <li class="playlist-item"><div style="width:35px; height:35px; background:#333; border-radius:5px;"></div><span>Louvores</span></li>
+                    <li class="playlist-item"><div style="width:35px; height:35px; background:#333; border-radius:5px;"></div><span>Pregações</span></li>
                 </ul>
-            </div>
-            
-            <div class="premium-box">
-                <h4>Ouça sem limites</h4>
-                <p>Tenha acesso a todas as faixas e playlists. Experimente o Premium.</p>
-                <button class="premium-btn">Assinar Premium</button>
             </div>
         </aside>
 
@@ -788,70 +692,19 @@
             <div class="top-bar">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar músicas, artistas, álbuns...">
+                    <input type="text" placeholder="Buscar...">
                 </div>
                 <div class="top-icons">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-bell"></i>
                     <div class="user-profile">
-                        <img src="path/to/user-avatar.png" alt="Gustavo"> <span>Gustavo</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <div style="width:35px; height:35px; background:#444; border-radius:50%;"></div>
+                        <span>Usuário</span>
                     </div>
                 </div>
             </div>
-
-            <div class="highlight-banner">
-                <div class="banner-text">
-                    <div class="banner-tag">Lançamento</div>
-                    <h1>Novas batidas para seus ouvidos</h1>
-                    <p>Confira o álbum novo de Jaylon, já disponível em todas as plataformas.</p>
-                    <div class="banner-buttons">
-                        <button class="banner-btn-listen"><i class="fas fa-play"></i> Ouvir agora</button>
-                        <button class="banner-btn-save">Salvar</button>
-                    </div>
-                </div>
-                <div class="banner-media">
-                    <i class="fas fa-play-circle"></i>
-                </div>
-            </div>
-
-            <section class="section-container">
-                <div class="section-header">
-                    <h2>Feito para você</h2>
-                    <a href="#">Ver tudo</a>
-                </div>
-                <div class="carousel-container">
-                    <div class="media-card">
-                        <div class="card-cover"><div class="card-play-icon"><i class="fas fa-play"></i></div></div>
-                        <div class="card-title">Daily Mix 1</div>
-                        <div class="card-desc">Com Bruno Mars, The Weeknd...</div>
-                    </div>
-                    <div class="media-card">
-                        <div class="card-cover"><div class="card-play-icon"><i class="fas fa-play"></i></div></div>
-                        <div class="card-title">Descobertas da Semana</div>
-                        <div class="card-desc">Novas músicas selecionadas...</div>
-                    </div>
-                    <div class="media-card">
-                        <div class="card-cover"><div class="card-play-icon"><i class="fas fa-play"></i></div></div>
-                        <div class="card-title">Radar de Lançamentos</div>
-                        <div class="card-desc">Os lançamentos mais quentes...</div>
-                    </div>
-                    <div class="media-card">
-                        <div class="card-cover"><div class="card-play-icon"><i class="fas fa-play"></i></div></div>
-                        <div class="card-title">Chill Vibes</div>
-                        <div class="card-desc">As melhores vibes para relaxar...</div>
-                    </div>
-                    <div class="media-card">
-                        <div class="card-cover"><div class="card-play-icon"><i class="fas fa-play"></i></div></div>
-                        <div class="card-title">Energia Máxima</div>
-                        <div class="card-desc">Músicas para te dar aquele gás...</div>
-                    </div>
-                </div>
-            </section>
 
             <section class="biblioteca-local">
                 <div class="section-header">
-                    <h2>Sua Biblioteca Local (Arquivos do PC)</h2>
+                    <h2>Músicas e Vídeos Adicionados</h2>
                 </div>
                 <div class="lista-musicas">
                     <ul id="playlist">
@@ -863,37 +716,30 @@
 
     <footer class="footer-player">
         <div class="now-playing">
-            <img src="path/to/default-cover.png" alt="Capa" id="player-capa"> <div class="track-info">
-                <div class="track-title" id="player-titulo">Nome da Música</div>
-                <div class="track-artist" id="player-artista">Nome do Artista</div>
+            <div style="width:50px; height:50px; background:#333; border-radius:5px;"></div>
+            <div class="track-info">
+                <div class="track-title" id="player-titulo">Aguardando...</div>
+                <div class="track-artist" id="player-artista">Adicione uma música</div>
             </div>
-            <button class="heart-btn"><i class="far fa-heart"></i></button>
         </div>
         
         <div class="player-controls">
             <div class="central-controls">
-                <button id="btn-shuffle"><i class="fas fa-random"></i></button>
                 <button id="btn-anterior"><i class="fas fa-backward"></i></button>
                 <button id="btn-play-pause"><i class="fas fa-play"></i></button>
                 <button id="btn-proxima"><i class="fas fa-forward"></i></button>
-                <button id="btn-repeat"><i class="fas fa-redo"></i></button>
             </div>
             
             <div class="progress-bar-container">
-                <span class="current-time">1:42</span>
                 <input type="range" id="progresso" value="0" min="0" max="100">
-                <span class="total-time">3:28</span>
             </div>
         </div>
         
         <div class="player-volume">
-            <button><i class="fas fa-music"></i></button>
-            <button><i class="fas fa-expand-arrows-alt"></i></button>
             <div class="volume-control">
                 <i class="fas fa-volume-up"></i>
                 <input type="range" class="volume-bar" value="70">
             </div>
-            <button><i class="fas fa-expand"></i></button>
         </div>
     </footer>
 
@@ -907,7 +753,7 @@
             <form id="form-musica">
                 <div>
                     <label>Título da Música/Vídeo:</label>
-                    <input type="text" id="titulo" required placeholder="Ex: Eclipse">
+                    <input type="text" id="titulo" required placeholder="Ex: Nome do Louvor">
                 </div>
 
                 <div>
@@ -933,5 +779,91 @@
         </div>
     </div>
 
+    <script>
+        // 1. Controle do Modal
+        const modal = document.getElementById('modal-adicionar');
+        const btnAbrirSidebar = document.getElementById('btn-abrir-modal-sidebar');
+        const btnAbrirPlaylist = document.getElementById('btn-abrir-modal');
+        const btnFecharX = document.getElementById('btn-fechar-modal');
+        const btnFecharCancelar = document.getElementById('btn-fechar-modal-v2');
+
+        function abrirModal() { modal.style.display = 'flex'; }
+        function fecharModal() { modal.style.display = 'none'; }
+
+        btnAbrirSidebar.addEventListener('click', abrirModal);
+        btnAbrirPlaylist.addEventListener('click', abrirModal);
+        btnFecharX.addEventListener('click', fecharModal);
+        btnFecharCancelar.addEventListener('click', fecharModal);
+
+        // 2. Motor de Áudio e Lista
+        const formMusica = document.getElementById('form-musica');
+        const listaPlaylist = document.getElementById('playlist');
+        const audioPlayer = new Audio();
+        
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const iconePlayPause = btnPlayPause.querySelector('i');
+        const tituloRodape = document.getElementById('player-titulo');
+        const artistaRodape = document.getElementById('player-artista');
+        const barraProgresso = document.getElementById('progresso');
+
+        formMusica.addEventListener('submit', function(evento) {
+            evento.preventDefault();
+
+            const titulo = document.getElementById('titulo').value;
+            const ano = document.getElementById('ano').value;
+            const arquivo = document.getElementById('arquivo-audio').files[0];
+
+            if (arquivo) {
+                const urlArquivo = URL.createObjectURL(arquivo);
+
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-music" style="color:var(--purple-main)"></i> <strong>${titulo}</strong> <span style="color:#aaa; font-size:0.8em; margin-left:auto;">${ano}</span>`;
+                
+                li.addEventListener('click', () => {
+                    tocarMusica(urlArquivo, titulo, "Arquivo Local");
+                });
+
+                listaPlaylist.appendChild(li);
+                fecharModal();
+                formMusica.reset();
+            }
+        });
+
+        // 3. Play / Pause
+        function tocarMusica(url, titulo, artista) {
+            audioPlayer.src = url;
+            audioPlayer.play();
+            
+            tituloRodape.textContent = titulo;
+            artistaRodape.textContent = artista;
+            
+            iconePlayPause.classList.replace('fa-play', 'fa-pause');
+        }
+
+        btnPlayPause.addEventListener('click', () => {
+            if (!audioPlayer.src) return;
+
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                iconePlayPause.classList.replace('fa-play', 'fa-pause');
+            } else {
+                audioPlayer.pause();
+                iconePlayPause.classList.replace('fa-pause', 'fa-play');
+            }
+        });
+
+        // 4. Barra de Progresso
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (audioPlayer.duration) {
+                const porcentagem = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                barraProgresso.value = porcentagem;
+            }
+        });
+
+        barraProgresso.addEventListener('input', () => {
+            const tempoDesejado = (barraProgresso.value / 100) * audioPlayer.duration;
+            audioPlayer.currentTime = tempoDesejado;
+        });
+    </script>
 </body>
 </html>
