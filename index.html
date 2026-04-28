@@ -143,47 +143,13 @@
 
         .playlist-item:hover { color: var(--text-main); }
 
-        .playlist-item img {
-            width: 35px;
-            height: 35px;
-            border-radius: 5px;
-            background-color: #333;
-        }
-
-        .premium-box {
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius-main);
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .premium-box h4 { margin-bottom: 10px; }
-        .premium-box p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-        }
-
-        .premium-btn {
-            background-color: var(--purple-main);
-            color: var(--text-main);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
-        }
-
-        .premium-btn:hover { background-color: var(--purple-hover); }
-
         /* CONTEÚDO PRINCIPAL */
         .content {
             flex: 1;
             background-color: var(--bg-body);
             padding: 30px;
             overflow-y: auto;
+            scroll-behavior: smooth; /* Ajuda na rolagem suave nativa */
         }
 
         .top-bar {
@@ -209,6 +175,7 @@
             padding-left: 10px;
             width: 100%;
             font-size: 0.9rem;
+            outline: none;
         }
 
         .top-icons {
@@ -225,176 +192,18 @@
             color: var(--text-main);
         }
 
-        .user-profile img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: #333;
-        }
-
-        .highlight-banner {
-            display: flex;
-            align-items: center;
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius-main);
-            padding: 40px;
-            margin-bottom: 30px;
-            gap: 40px;
-        }
-
-        .banner-text { flex: 1; }
-
-        .banner-tag {
-            color: var(--purple-main);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-        }
-
-        .banner-text h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        .banner-text p {
-            color: var(--text-muted);
-            margin-bottom: 25px;
-        }
-
-        .banner-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .banner-btn-listen, .banner-btn-save {
-            padding: 10px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .banner-btn-listen {
-            background-color: var(--purple-main);
-            color: white;
-            border: none;
-        }
-
-        .banner-btn-save {
-            background: none;
-            border: 1px solid var(--text-muted);
-            color: var(--text-main);
-        }
-
-        .banner-media {
-            width: 200px;
-            height: 200px;
-            border-radius: var(--border-radius-main);
-            background-color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            position: relative;
-        }
-
-        .banner-media i {
-            font-size: 3rem;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .section-container { margin-bottom: 30px; }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-header a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .carousel-container {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .media-card {
-            min-width: 180px;
-            width: 180px;
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius-main);
-            padding: 15px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-        }
-
-        .media-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(126, 62, 248, 0.2);
-        }
-
-        .card-cover {
-            width: 100%;
-            height: 180px;
-            border-radius: var(--border-radius-main);
-            background-color: #444;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .card-play-icon {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(126, 62, 248, 0.8);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.2rem;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .media-card:hover .card-play-icon { opacity: 1; }
-
-        .card-title {
-            font-weight: bold;
-            font-size: 1rem;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
         /* BIBLIOTECA LOCAL (Lista) */
-        .biblioteca-local { margin-bottom: 30px; }
+        .biblioteca-local { 
+            margin-top: 40px;
+            margin-bottom: 30px; 
+            padding-top: 20px; /* Espaço para quando rolar a tela */
+        }
 
         .lista-musicas {
             background-color: var(--bg-card);
             border-radius: var(--border-radius-main);
             padding: 20px;
-            min-height: 100px;
+            min-height: 150px;
         }
 
         .lista-musicas ul {
@@ -440,23 +249,8 @@
             width: 250px;
         }
 
-        .now-playing img {
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            background-color: #333;
-        }
-
         .track-info .track-title { font-weight: bold; font-size: 1rem; }
         .track-info .track-artist { color: var(--text-muted); font-size: 0.8rem; }
-
-        .heart-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
 
         .player-controls {
             flex: 1;
@@ -507,8 +301,6 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            color: var(--text-muted);
-            font-size: 0.8rem;
         }
 
         #progresso {
@@ -536,13 +328,6 @@
             width: 250px;
             justify-content: flex-end;
             color: var(--text-muted);
-        }
-
-        .player-volume button {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
         }
 
         .volume-control { display: flex; align-items: center; gap: 8px; }
@@ -621,11 +406,6 @@
             width: 100%;
         }
 
-        #form-musica input:focus, #form-musica textarea:focus {
-            outline: none;
-            border-color: var(--purple-main);
-        }
-
         .modal-footer {
             margin-top: 25px;
             display: flex;
@@ -664,11 +444,10 @@
             <nav class="main-nav">
                 <ul>
                     <li class="active"><a href="#"><i class="fas fa-home"></i> Início</a></li>
-                    <li><a href="#"><i class="fas fa-search"></i> Buscar</a></li>
                     <li><a href="#"><i class="fas fa-book-open"></i> Sua Biblioteca</a></li>
                     <li>
                         <button class="add-btn-sidebar" id="btn-abrir-modal-sidebar">
-                            <i class="fas fa-plus"></i> Adicionar Música do PC
+                            <i class="fas fa-plus"></i> Adicionar Música
                         </button>
                     </li>
                 </ul>
@@ -692,7 +471,7 @@
             <div class="top-bar">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar...">
+                    <input type="text" placeholder="Buscar suas músicas...">
                 </div>
                 <div class="top-icons">
                     <div class="user-profile">
@@ -711,12 +490,13 @@
                         </ul>
                 </div>
             </section>
+            
+            <div style="height: 500px;"></div>
         </main>
     </div>
 
     <footer class="footer-player">
         <div class="now-playing">
-            <div style="width:50px; height:50px; background:#333; border-radius:5px;"></div>
             <div class="track-info">
                 <div class="track-title" id="player-titulo">Aguardando...</div>
                 <div class="track-artist" id="player-artista">Adicione uma música</div>
@@ -755,20 +535,13 @@
                     <label>Título da Música/Vídeo:</label>
                     <input type="text" id="titulo" required placeholder="Ex: Nome do Louvor">
                 </div>
-
                 <div>
                     <label>Ano de Lançamento:</label>
                     <input type="number" id="ano" placeholder="Ex: 2024">
                 </div>
-
-                <div>
-                    <label>Sinopse/Notas:</label>
-                    <textarea id="sinopse" rows="3" placeholder="Opcional"></textarea>
-                </div>
-
                 <div>
                     <label>Arquivo do PC:</label>
-                    <input type="file" id="arquivo-audio" accept="audio/*, video/*" required>
+                    <input type="file" id="arquivo-audio" accept="audio/*, video/*" required style="margin-top:5px;">
                 </div>
 
                 <div class="modal-footer">
@@ -864,36 +637,37 @@
             const tempoDesejado = (barraProgresso.value / 100) * audioPlayer.duration;
             audioPlayer.currentTime = tempoDesejado;
         });
-    </script>
-// --- 5. BOTÃO BIBLIOTECA E SISTEMA DE BUSCA ---
 
-        // 5.1 Fazer o link "Sua Biblioteca" rolar a tela
-        // Caça o link que tem o ícone de livro dentro
+        // 5. Botão Biblioteca e Busca
         const linkBiblioteca = document.querySelector('.main-nav a i.fa-book-open').parentElement; 
         const secaoBiblioteca = document.querySelector('.biblioteca-local');
+        const areaConteudo = document.querySelector('.content');
 
         linkBiblioteca.addEventListener('click', (evento) => {
-            evento.preventDefault(); // Evita o comportamento padrão de recarregar
-            secaoBiblioteca.scrollIntoView({ behavior: 'smooth' }); // Rola a tela suavemente até a seção
+            evento.preventDefault(); 
+            // Rola o conteúdo principal até a seção da biblioteca
+            areaConteudo.scrollTo({
+                top: secaoBiblioteca.offsetTop - 20,
+                behavior: 'smooth'
+            });
         });
 
-        // 5.2 Fazer a barra de "Buscar..." filtrar a lista
         const inputBusca = document.querySelector('.search-bar input');
 
         inputBusca.addEventListener('input', () => {
-            const termoBuscado = inputBusca.value.toLowerCase(); // Pega o que foi digitado em minúsculo
-            const musicasNaLista = listaPlaylist.querySelectorAll('li'); // Pega todas as músicas adicionadas
+            const termoBuscado = inputBusca.value.toLowerCase(); 
+            const musicasNaLista = listaPlaylist.querySelectorAll('li'); 
 
-            // Passa por cada música da lista verificando se o nome bate com a busca
             musicasNaLista.forEach(musica => {
                 const textoMusica = musica.textContent.toLowerCase();
                 
                 if (textoMusica.includes(termoBuscado)) {
-                    musica.style.display = 'flex'; // Mostra a música se encontrar o texto
+                    musica.style.display = 'flex'; 
                 } else {
-                    musica.style.display = 'none'; // Esconde a música se não encontrar
+                    musica.style.display = 'none'; 
                 }
             });
         });
+    </script>
 </body>
 </html>
