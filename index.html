@@ -151,7 +151,7 @@
         const modal = document.getElementById('modal-add');
         
         document.getElementById('btn-abrir-modal').onclick = () => {
-            const senha = prompt("Área restrita. Digite a senha (777):");
+            const senha = prompt("Área restrita");
             if (senha === "777") {
                 modal.style.display = 'flex';
             } else if (senha !== null) { // Se não clicou em cancelar
