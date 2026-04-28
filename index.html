@@ -865,5 +865,35 @@
             audioPlayer.currentTime = tempoDesejado;
         });
     </script>
+// --- 5. BOTÃO BIBLIOTECA E SISTEMA DE BUSCA ---
+
+        // 5.1 Fazer o link "Sua Biblioteca" rolar a tela
+        // Caça o link que tem o ícone de livro dentro
+        const linkBiblioteca = document.querySelector('.main-nav a i.fa-book-open').parentElement; 
+        const secaoBiblioteca = document.querySelector('.biblioteca-local');
+
+        linkBiblioteca.addEventListener('click', (evento) => {
+            evento.preventDefault(); // Evita o comportamento padrão de recarregar
+            secaoBiblioteca.scrollIntoView({ behavior: 'smooth' }); // Rola a tela suavemente até a seção
+        });
+
+        // 5.2 Fazer a barra de "Buscar..." filtrar a lista
+        const inputBusca = document.querySelector('.search-bar input');
+
+        inputBusca.addEventListener('input', () => {
+            const termoBuscado = inputBusca.value.toLowerCase(); // Pega o que foi digitado em minúsculo
+            const musicasNaLista = listaPlaylist.querySelectorAll('li'); // Pega todas as músicas adicionadas
+
+            // Passa por cada música da lista verificando se o nome bate com a busca
+            musicasNaLista.forEach(musica => {
+                const textoMusica = musica.textContent.toLowerCase();
+                
+                if (textoMusica.includes(termoBuscado)) {
+                    musica.style.display = 'flex'; // Mostra a música se encontrar o texto
+                } else {
+                    musica.style.display = 'none'; // Esconde a música se não encontrar
+                }
+            });
+        });
 </body>
 </html>
