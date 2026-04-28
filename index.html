@@ -1,118 +1,106 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jesus Reina - Player Premium</title>
+    <title>Jesus Reina - Neon Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #151515;
-            --bg-modal: #1e1e1e;
+            --bg-body: #050508;
+            --neon-pink: #ff007f;
+            --neon-blue: #00f0ff;
             --text-main: #ffffff;
-            --text-muted: #888888;
-            --purple-main: #8a2be2;
-            --purple-glow: rgba(138, 43, 226, 0.6);
+            --text-muted: #a0a0b0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; position: relative; }
+        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            position: relative; 
+        }
 
-        /* --- CANVAS DAS PARTÍCULAS NEON --- */
+        /* --- CANVAS DE FUNDO --- */
         #particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 0; /* Fica no fundo */
-            pointer-events: none; /* Não atrapalha os cliques */
-            opacity: 0.8;
+            z-index: 0; 
+            pointer-events: none; 
         }
 
-        /* --- ANIMAÇÕES (@keyframes) --- */
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 15px 5px rgba(138, 43, 226, 0.2); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* MENU LATERAL */
-        .sidebar { width: 260px; background-color: #000; padding: 25px; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 20; }
-        .logo { font-size: 1.6rem; font-weight: 800; color: var(--purple-main); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        /* --- MENU LATERAL --- */
+        .sidebar { width: 250px; padding: 25px; display: flex; flex-direction: column; z-index: 20; background: transparent; }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--neon-pink); margin-bottom: 40px; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px var(--neon-pink); }
         .main-nav ul { list-style: none; }
-        .main-nav li { margin-bottom: 18px; }
-        
+        .main-nav li { margin-bottom: 20px; }
         .main-nav a, .add-btn { 
-            text-decoration: none; color: var(--text-muted); display: flex; align-items: center; gap: 12px; font-weight: 600; cursor: pointer; background: none; border: none; width: 100%; font-size: 1rem;
-            transition: all 0.3s ease; 
+            text-decoration: none; color: var(--text-muted); display: flex; align-items: center; gap: 15px; font-weight: 600; cursor: pointer; background: none; border: none; width: 100%; font-size: 1rem; transition: 0.3s; 
         }
-        .main-nav a:hover, .add-btn:hover { color: #fff; transform: translateX(8px); }
+        .main-nav a:hover, .add-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
 
-        /* CONTEÚDO CENTRAL */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-bottom: 120px; scroll-behavior: smooth; z-index: 10; }
-        
-        .search-bar { background: #1a1a1a; border-radius: 25px; padding: 10px 20px; display: flex; align-items: center; gap: 10px; width: 400px; transition: box-shadow 0.3s ease; }
-        .search-bar:focus-within { box-shadow: 0 0 10px var(--purple-glow); border: 1px solid var(--purple-main); }
-        .search-bar input { background: none; border: none; color: #fff; width: 100%; outline: none; }
+        /* --- CONTEÚDO CENTRAL --- */
+        .main-content { flex: 1; padding: 40px; z-index: 10; display: flex; flex-direction: column; gap: 30px; pointer-events: none; /* Deixa o clique passar para o modal */ }
+        .main-content > * { pointer-events: auto; } /* Reativa clique nos elementos */
 
-        /* TELA DE VÍDEO */
-        #video-container { width: 100%; max-width: 800px; background: #000; border-radius: 12px; aspect-ratio: 16/9; display: none; margin: 0 auto; overflow: hidden; border: 2px solid #222; transition: all 0.4s ease; position: relative; z-index: 15;}
+        .search-bar { background: transparent; border: 1px solid var(--neon-pink); border-radius: 25px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; width: 350px; box-shadow: 0 0 15px rgba(255,0,127,0.3); }
+        .search-bar i { color: var(--neon-pink); text-shadow: 0 0 5px var(--neon-pink); }
+        .search-bar input { background: none; border: none; color: #fff; width: 100%; outline: none; font-size: 1rem; }
+
+        .playlist-container { background: rgba(10,10,15,0.6); backdrop-filter: blur(10px); border-radius: 16px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); width: 350px; }
+        .playlist-container h2 { color: #fff; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
+        .playlist-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .playlist-item { padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-muted); transition: 0.3s; }
+        .playlist-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
+        /* VÍDEO */
+        #video-container { position: absolute; bottom: 120px; right: 40px; width: 400px; aspect-ratio: 16/9; background: #000; border-radius: 10px; border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,240,255,0.3); display: none; z-index: 15; overflow: hidden; }
         video, iframe { width: 100%; height: 100%; border: none; }
 
-        /* LISTA DE MÚSICAS */
-        .playlist-container { background: rgba(21, 21, 21, 0.85); backdrop-filter: blur(5px); border-radius: 12px; padding: 20px; }
-        .playlist-list { list-style: none; margin-top: 15px; }
-        .playlist-item { 
-            padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; 
-            transition: all 0.2s ease; 
-            opacity: 0; 
-            animation: fadeInSlideUp 0.4s ease-out forwards;
-        }
-        .playlist-item:hover { background: rgba(34, 34, 34, 0.9); transform: scale(1.01); }
-        .playlist-item.active { background: rgba(42, 42, 42, 0.9); border-left: 4px solid var(--purple-main); box-shadow: inset 0 0 15px rgba(138,43,226,0.1); }
-
-        /* BARRA DO PLAYER (RODAPÉ) */
-        .footer-player { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(17,17,17,0.85); backdrop-filter: blur(15px); border-top: 1px solid #222; display: flex; align-items: center; padding: 0 30px; justify-content: space-between; z-index: 100; }
+        /* --- CAIXA DE DIÁLOGO (MODAL) ESTILO IMAGEM --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: flex-start; justify-content: center; z-index: 200; padding-top: 10vh; }
+        .modal-content-wrapper { position: relative; padding: 2px; border-radius: 15px; background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue)); box-shadow: 0 0 30px rgba(0,240,255,0.4); }
+        .modal-content { background: #12121a; padding: 25px; border-radius: 13px; width: 450px; }
         
-        .now-playing { display: flex; align-items: center; gap: 15px; width: 250px; }
-        .cover-art { width: 50px; height: 50px; background: #222; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: var(--purple-main); transition: all 0.3s ease; }
+        .modal-header { margin-bottom: 15px; }
+        .modal-header h3 { font-size: 1rem; font-weight: 500; color: #fff; margin-bottom: 5px; }
+        .modal-header p { font-size: 0.85rem; color: var(--text-muted); }
         
-        .is-playing .cover-art { animation: pulse 2s infinite, spin 10s linear infinite; background: var(--purple-main); color: white; }
+        .modal-content input[type="text"] { width: 100%; background: transparent; border: 1px solid var(--neon-blue); border-radius: 8px; padding: 12px; color: #fff; outline: none; margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,240,255,0.1); }
+        .modal-content select { width: 100%; background: #1a1a24; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 20px; }
+        
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 15px; }
+        .btn-ok { background: linear-gradient(90deg, #aa00ff, var(--neon-blue)); border: none; color: #fff; padding: 10px 30px; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(0,240,255,0.4); transition: 0.2s; }
+        .btn-ok:hover { transform: scale(1.05); }
+        .btn-cancel { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-cancel:hover { background: rgba(0,240,255,0.1); }
 
+        /* --- RODAPÉ PLAYER --- */
+        .footer-player { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(5,5,8,0.8); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 40px; justify-content: space-between; z-index: 100; }
+        .now-playing { display: flex; flex-direction: column; width: 250px; }
+        .now-playing #track-title { font-weight: bold; font-size: 1rem; color: #fff; }
+        .now-playing #track-type { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .player-center { display: flex; align-items: center; gap: 30px; flex: 1; justify-content: center; }
         .controls { display: flex; align-items: center; gap: 20px; }
-        .controls button, .extra-controls button { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: all 0.2s ease; }
-        .controls button:hover, .extra-controls button:hover { color: #fff; transform: scale(1.2); }
-        .controls button:active, .extra-controls button:active { transform: scale(0.9); }
-        
-        #play-pause { background: #fff; color: #000; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-        #play-pause:hover { background: var(--purple-main); color: #fff; box-shadow: 0 0 15px var(--purple-glow); }
+        .controls button { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .controls button:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+        #play-pause { background: transparent; border: 2px solid #fff; color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        #play-pause:hover { background: #fff; color: #000; }
 
-        .extra-controls { width: 250px; display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+        /* Onda Sonora do Rodapé (Simulada) */
+        .footer-wave { flex: 1; height: 30px; display: flex; align-items: center; gap: 3px; max-width: 400px; opacity: 0.5; }
+        .wave-bar { width: 3px; background: var(--neon-blue); border-radius: 2px; height: 5px; transition: height 0.1s; }
 
-        /* JANELA FLUTUANTE (MODAL) */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 200; opacity: 0; transition: opacity 0.3s ease; }
-        .modal.show { display: flex; opacity: 1; }
-        .modal-content { background: var(--bg-modal); padding: 30px; border-radius: 15px; width: 450px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); transform: translateY(30px); transition: transform 0.3s ease; }
-        .modal.show .modal-content { transform: translateY(0); }
-        
-        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; transition: border 0.3s ease; }
-        .modal-content input:focus, .modal-content select:focus { border-color: var(--purple-main); outline: none; }
-        
-        .btn-save { background: var(--purple-main); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: all 0.3s ease; }
-        .btn-save:hover { background: var(--purple-hover); transform: translateY(-2px); box-shadow: 0 5px 15px var(--purple-glow); }
-        .btn-save:active { transform: translateY(0); }
+        .extra-controls { display: flex; align-items: center; gap: 20px; width: 250px; justify-content: flex-end; color: var(--text-muted); }
+        .extra-controls button { background: none; border: none; color: inherit; font-size: 1.2rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -136,191 +124,233 @@
             <input type="text" id="input-busca" placeholder="Buscar na biblioteca...">
         </div>
 
-        <div id="video-container">
-            <video id="main-video" controls style="display:none;"></video>
-            <iframe id="drive-player" style="display:none;" allowfullscreen></iframe>
-        </div>
-
         <div class="playlist-container" id="secao-biblioteca">
             <h2>Acervo Salvo</h2>
             <ul class="playlist-list" id="lista-playlist"></ul>
+        </div>
+        
+        <div id="video-container">
+            <video id="main-video" controls style="display:none;"></video>
+            <iframe id="drive-player" style="display:none;" allowfullscreen></iframe>
         </div>
     </main>
 
     <footer class="footer-player" id="player-rodape">
         <div class="now-playing">
-            <div class="cover-art"><i class="fas fa-music"></i></div>
-            <div>
-                <div id="track-title" style="font-weight: bold;">Nada tocando</div>
-                <div id="track-type" style="font-size: 0.8rem; color: #888;">Escolha um arquivo</div>
-            </div>
+            <div id="track-title">Nada tocando</div>
+            <div id="track-type">Escolha um arquivo</div>
         </div>
 
-        <div class="controls">
-            <button id="btn-prev"><i class="fas fa-step-backward"></i></button>
-            <button id="play-pause"><i class="fas fa-play"></i></button>
-            <button id="btn-next"><i class="fas fa-step-forward"></i></button>
+        <div class="player-center">
+            <div class="controls">
+                <button id="btn-prev"><i class="fas fa-step-backward"></i></button>
+                <button id="play-pause"><i class="fas fa-play"></i></button>
+                <button id="btn-next"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="footer-wave" id="footer-wave"></div>
         </div>
 
         <div class="extra-controls">
-            <button><i class="fas fa-volume-up"></i></button>
+            <i class="fas fa-volume-up"></i>
             <button id="btn-fullscreen" title="Tela Cheia"><i class="fas fa-expand"></i></button>
         </div>
     </footer>
 
     <div class="modal" id="modal-add">
-        <div class="modal-content">
-            <h3>Adicionar ao Sistema</h3>
-            <form id="form-add">
-                <input type="text" id="add-titulo" placeholder="Nome do arquivo" required>
-                <select id="add-origem">
-                    <option value="drive">Link do Google Drive (Salva para sempre)</option>
-                    <option value="local">Arquivo do PC (Temporário)</option>
-                </select>
-                <input type="text" id="add-link" placeholder="Cole o link do Drive aqui">
-                <input type="file" id="add-file" style="display:none;" accept="audio/*,video/*">
-                <button type="submit" class="btn-save">Salvar no Acervo</button>
-                <button type="button" onclick="fecharModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;">Cancelar</button>
-            </form>
+        <div class="modal-content-wrapper">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>joabeplay1.github.io diz</h3>
+                    <p>Área restrita. Digite a senha (777):</p>
+                </div>
+                <form id="form-add">
+                    <input type="text" id="input-senha" placeholder="" required>
+                    
+                    <div id="campos-adicao" style="display: none;">
+                        <input type="text" id="add-titulo" placeholder="Nome da Música/Vídeo" required>
+                        <select id="add-origem">
+                            <option value="drive">Link Google Drive</option>
+                            <option value="local">Arquivo PC</option>
+                        </select>
+                        <input type="text" id="add-link" placeholder="Link do Drive">
+                        <input type="file" id="add-file" style="display:none;" accept="audio/*,video/*">
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-ok">OK</button>
+                        <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- VARIÁVEIS DO PLAYER ---
+        // --- MOTOR DO CANVAS (Ondas, Círculo e Partículas da Imagem) ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let isPlaying = false;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.size = Math.random() * 3 + 1;
+                this.color = Math.random() > 0.5 ? '#ff007f' : '#00f0ff';
+                this.isNote = Math.random() > 0.8;
+                this.noteChar = Math.random() > 0.5 ? '♪' : '♫';
+            }
+            update() {
+                let speed = isPlaying ? 2 : 0.2;
+                this.x += this.vx * speed;
+                this.y += this.vy * speed;
+                if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                if(this.isNote) {
+                    ctx.font = `${this.size * 5}px Arial`;
+                    ctx.fillText(this.noteChar, this.x, this.y);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        for(let i=0; i<80; i++) particles.push(new Particle());
+
+        function drawVisualizer() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Linha Horizontal Neon
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, cy);
+            for(let i = 0; i < cx; i += 15) {
+                let amp = isPlaying ? Math.random() * 40 : 2;
+                ctx.lineTo(i, cy + (Math.random() > 0.5 ? amp : -amp));
+            }
+            ctx.strokeStyle = '#ff007f'; ctx.shadowColor = '#ff007f'; ctx.stroke();
+
+            ctx.beginPath(); ctx.moveTo(cx, cy);
+            for(let i = cx; i < canvas.width; i += 15) {
+                let amp = isPlaying ? Math.random() * 40 : 2;
+                ctx.lineTo(i, cy + (Math.random() > 0.5 ? amp : -amp));
+            }
+            ctx.strokeStyle = '#00f0ff'; ctx.shadowColor = '#00f0ff'; ctx.stroke();
+
+            // Círculo Central
+            const radius = 120;
+            for(let i = 0; i < 60; i++) {
+                const angle = (i / 60) * Math.PI * 2;
+                const h = isPlaying ? Math.random() * 50 + 5 : 5;
+                const x1 = cx + Math.cos(angle) * radius;
+                const y1 = cy + Math.sin(angle) * radius;
+                const x2 = cx + Math.cos(angle) * (radius + h);
+                const y2 = cy + Math.sin(angle) * (radius + h);
+                
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+                ctx.strokeStyle = Math.cos(angle) < 0 ? '#ff007f' : '#00f0ff';
+                ctx.shadowColor = ctx.strokeStyle;
+                ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
+            }
+
+            // Nota Musical no centro
+            ctx.font = "70px Arial"; ctx.fillStyle = "#fff"; ctx.shadowColor = "#fff";
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText("♫", cx, cy);
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(drawVisualizer);
+        }
+        drawVisualizer();
+
+        // Construir a ondinha do rodapé
+        const waveContainer = document.getElementById('footer-wave');
+        for(let i=0; i<40; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'wave-bar';
+            waveContainer.appendChild(bar);
+        }
+        setInterval(() => {
+            if(isPlaying) {
+                document.querySelectorAll('.wave-bar').forEach(b => {
+                    b.style.height = `${Math.random() * 25 + 5}px`;
+                    b.style.background = Math.random() > 0.5 ? '#ff007f' : '#00f0ff';
+                });
+            } else {
+                document.querySelectorAll('.wave-bar').forEach(b => b.style.height = '5px');
+            }
+        }, 150);
+
+        // --- SISTEMA LÓGICO DO PLAYER ---
         let playlist = [];
         let indexAtual = -1;
-        
         const playerAudio = new Audio();
         const playerVideo = document.getElementById('main-video');
         const iframeDrive = document.getElementById('drive-player');
         const containerVideo = document.getElementById('video-container');
-        const rodapeAnimacao = document.getElementById('player-rodape');
 
-        // --- SISTEMA DE PARTÍCULAS NEON (VISUALIZADOR) ---
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        let isMusicPlaying = false; // Variável que controla o "ritmo" das partículas
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function salvarMemoria() { localStorage.setItem('jrAcervo', JSON.stringify(playlist.filter(i => i.origem === 'drive'))); }
+        function carregarMemoria() { 
+            const dados = localStorage.getItem('jrAcervo'); 
+            if(dados) { playlist = JSON.parse(dados); renderizar(); } 
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        carregarMemoria();
 
-        class Particle {
-            constructor() {
-                // Começam do meio da tela
-                this.x = canvas.width / 2;
-                this.y = (canvas.height / 2) - 50;
-                
-                // Direção circular aleatória
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 2 + 0.5;
-                this.baseVelocityX = Math.cos(angle) * speed;
-                this.baseVelocityY = Math.sin(angle) * speed;
-                this.size = Math.random() * 3 + 1;
-                
-                // Cores Neon (Rosa, Roxo, Azul Claro)
-                const colors = ['#ff007f', '#8a2be2', '#00f0ff'];
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.life = 1;
-            }
-            update() {
-                // A magia: Se a música toca, as partículas ficam mais rápidas
-                let speedMultiplier = isMusicPlaying ? 3.5 : 0.4;
-                
-                this.x += this.baseVelocityX * speedMultiplier;
-                this.y += this.baseVelocityY * speedMultiplier;
-
-                if (this.size > 0.1) this.size -= 0.01 * speedMultiplier;
-                this.life -= 0.005 * speedMultiplier;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            // Se a música tocar, solta mais partículas
-            let spawnRate = isMusicPlaying ? 4 : 1;
-            if (particlesArray.length < 200) {
-                for(let i = 0; i < spawnRate; i++) {
-                    particlesArray.push(new Particle());
-                }
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            initParticles();
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                // Remove partículas que sumiram
-                if (particlesArray[i].life <= 0 || particlesArray[i].size <= 0.1) {
-                    particlesArray.splice(i, 1);
-                    i--;
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles(); // Inicia a animação em background
-
-        // --- 1. MEMÓRIA ---
-        function salvarNaMemoria() {
-            const itensParaSalvar = playlist.filter(item => item.origem === 'drive');
-            localStorage.setItem('jesusReinaAcervo', JSON.stringify(itensParaSalvar));
-        }
-
-        function carregarDaMemoria() {
-            const dadosSalvos = localStorage.getItem('jesusReinaAcervo');
-            if (dadosSalvos) {
-                playlist = JSON.parse(dadosSalvos);
-                renderizar();
-            }
-        }
-        carregarDaMemoria();
-
-        // --- 2. MODAL ---
+        // --- MODAL ---
         const modal = document.getElementById('modal-add');
+        const inputSenha = document.getElementById('input-senha');
+        const camposAdicao = document.getElementById('campos-adicao');
+        let senhaValidada = false;
+
         document.getElementById('btn-abrir-modal').onclick = () => {
-            const senha = prompt("Área restrita");
-            if (senha === "777") {
-                modal.classList.add('show');
-            } else if (senha !== null) {
-                alert("Senha incorreta!");
-            }
+            modal.style.display = 'flex';
+            senhaValidada = false;
+            inputSenha.style.display = 'block';
+            inputSenha.value = '';
+            camposAdicao.style.display = 'none';
         };
-        
-        function fecharModal() { 
-            modal.classList.remove('show'); 
-            setTimeout(() => { document.getElementById('form-add').reset(); }, 300); 
-        }
+
+        function fecharModal() { modal.style.display = 'none'; document.getElementById('form-add').reset(); }
 
         document.getElementById('add-origem').onchange = (e) => {
-            const isLocal = e.target.value === 'local';
-            document.getElementById('add-link').style.display = isLocal ? 'none' : 'block';
-            document.getElementById('add-file').style.display = isLocal ? 'block' : 'none';
+            document.getElementById('add-link').style.display = e.target.value === 'local' ? 'none' : 'block';
+            document.getElementById('add-file').style.display = e.target.value === 'local' ? 'block' : 'none';
         };
 
-        function converterLinkDrive(link) {
-            if (link.includes('drive.google.com')) {
-                const id = link.match(/\/d\/(.+?)\//);
-                return id ? `https://drive.google.com/file/d/${id[1]}/preview` : link;
-            }
-            return link;
-        }
-
-        // --- 3. SALVAR ITEM ---
         document.getElementById('form-add').onsubmit = (e) => {
             e.preventDefault();
+            
+            // Etapa 1: Validar Senha
+            if(!senhaValidada) {
+                if(inputSenha.value === "777") {
+                    senhaValidada = true;
+                    inputSenha.style.display = 'none';
+                    camposAdicao.style.display = 'block';
+                } else {
+                    alert("Senha incorreta!");
+                }
+                return;
+            }
+
+            // Etapa 2: Salvar Arquivo
             const titulo = document.getElementById('add-titulo').value;
             const origem = document.getElementById('add-origem').value;
             let url = "";
@@ -330,13 +360,13 @@
                 if (!file) return;
                 url = URL.createObjectURL(file);
             } else {
-                url = converterLinkDrive(document.getElementById('add-link').value);
+                let l = document.getElementById('add-link').value;
+                const id = l.match(/\/d\/(.+?)\//);
+                url = id ? `https://drive.google.com/file/d/${id[1]}/preview` : l;
             }
 
             playlist.push({ titulo, url, origem });
-            salvarNaMemoria();
-            renderizar();
-            fecharModal();
+            salvarMemoria(); renderizar(); fecharModal();
         };
 
         function renderizar() {
@@ -344,80 +374,45 @@
             lista.innerHTML = "";
             playlist.forEach((item, i) => {
                 const li = document.createElement('li');
-                li.className = `playlist-item ${i === indexAtual ? 'active' : ''}`;
-                li.style.animationDelay = `${i * 0.05}s`; 
-                li.innerHTML = `<i class="fas fa-${item.origem === 'drive' ? 'cloud' : 'file-audio'}"></i> <span>${item.titulo}</span>`;
+                li.className = 'playlist-item';
+                li.innerHTML = `<i class="fas fa-cloud" style="color:var(--neon-pink)"></i> <span>${item.titulo}</span>`;
                 li.onclick = () => tocar(i);
                 lista.appendChild(li);
             });
         }
 
-        // --- 4. MOTOR DO PLAYER ---
-        function atualizarAnimacao(tocando) {
-            isMusicPlaying = tocando; // Acelera as partículas do fundo
-            if(tocando) {
-                rodapeAnimacao.classList.add('is-playing');
-            } else {
-                rodapeAnimacao.classList.remove('is-playing');
-            }
-        }
-
         function tocar(i) {
-            if (i < 0 || i >= playlist.length) return;
-            indexAtual = i;
-            const item = playlist[i];
+            if(i < 0 || i >= playlist.length) return;
+            indexAtual = i; const item = playlist[i];
+            
+            playerAudio.pause(); playerVideo.pause();
+            containerVideo.style.display = 'none'; playerVideo.style.display = 'none'; iframeDrive.style.display = 'none';
 
-            playerAudio.pause();
-            playerVideo.pause();
-            playerVideo.style.display = 'none';
-            iframeDrive.style.display = 'none';
-            iframeDrive.src = "";
-            containerVideo.style.display = 'none';
-
-            let vaiTocar = false;
-
-            if (item.origem === 'drive') { 
-                containerVideo.style.display = 'block';
-                iframeDrive.src = item.url;
-                iframeDrive.style.display = 'block';
-                vaiTocar = true; 
-            } else { 
-                const isVideo = item.url.startsWith('blob:') && document.getElementById('add-file').files[0]?.type.includes('video');
-                if (isVideo) {
-                    containerVideo.style.display = 'block';
-                    playerVideo.src = item.url;
-                    playerVideo.style.display = 'block';
-                    playerVideo.play();
-                    vaiTocar = true;
-                } else {
-                    playerAudio.src = item.url;
-                    playerAudio.play();
-                    vaiTocar = true;
-                }
+            if(item.origem === 'drive') {
+                containerVideo.style.display = 'block'; iframeDrive.src = item.url; iframeDrive.style.display = 'block';
+                isPlaying = true;
+            } else {
+                const isVid = item.url.startsWith('blob:') && document.getElementById('add-file').files[0]?.type.includes('video');
+                if(isVid) { containerVideo.style.display='block'; playerVideo.src=item.url; playerVideo.style.display='block'; playerVideo.play(); }
+                else { playerAudio.src = item.url; playerAudio.play(); }
+                isPlaying = true;
             }
 
             document.getElementById('track-title').innerText = item.titulo;
             document.getElementById('track-type').innerText = item.origem.toUpperCase();
             document.getElementById('play-pause').innerHTML = '<i class="fas fa-pause"></i>';
-            
-            atualizarAnimacao(vaiTocar);
-            renderizar();
         }
 
-        // --- 5. CONTROLOS E TELA CHEIA ---
         document.getElementById('play-pause').onclick = () => {
-            if (indexAtual === -1) return;
-            
-            let isPaused = playerAudio.paused && playerVideo.paused;
-            
-            if (isPaused) {
-                playlist[indexAtual].origem === 'drive' ? null : (playerAudio.src ? playerAudio.play() : playerVideo.play());
+            if(indexAtual === -1) return;
+            if(playerAudio.paused && playerVideo.paused) {
+                if(playlist[indexAtual].origem !== 'drive') playerAudio.src ? playerAudio.play() : playerVideo.play();
                 document.getElementById('play-pause').innerHTML = '<i class="fas fa-pause"></i>';
-                atualizarAnimacao(true);
+                isPlaying = true;
             } else {
                 playerAudio.pause(); playerVideo.pause();
                 document.getElementById('play-pause').innerHTML = '<i class="fas fa-play"></i>';
-                atualizarAnimacao(false);
+                isPlaying = false;
             }
         };
 
@@ -425,33 +420,13 @@
         document.getElementById('btn-prev').onclick = () => tocar(indexAtual - 1);
 
         document.getElementById('input-busca').oninput = (e) => {
-            const termo = e.target.value.toLowerCase();
-            document.querySelectorAll('.playlist-item').forEach(li => {
-                li.style.display = li.innerText.toLowerCase().includes(termo) ? 'flex' : 'none';
-            });
+            const t = e.target.value.toLowerCase();
+            document.querySelectorAll('.playlist-item').forEach(li => li.style.display = li.innerText.toLowerCase().includes(t) ? 'flex' : 'none');
         };
 
-        document.getElementById('btn-biblioteca').onclick = () => {
-            document.getElementById('secao-biblioteca').scrollIntoView({ behavior: 'smooth' });
-        };
-
-        // LÓGICA DE TELA CHEIA
-        const btnFullscreen = document.getElementById('btn-fullscreen');
-        btnFullscreen.onclick = () => {
-            if(containerVideo.style.display === 'none' || containerVideo.style.display === '') {
-                alert("Selecione um vídeo primeiro para usar a tela cheia.");
-                return;
-            }
-
-            if (!document.fullscreenElement) {
-                containerVideo.requestFullscreen().catch(err => {
-                    alert(`Erro ao tentar tela cheia: ${err.message}`);
-                });
-                btnFullscreen.innerHTML = '<i class="fas fa-compress"></i>';
-            } else {
-                document.exitFullscreen();
-                btnFullscreen.innerHTML = '<i class="fas fa-expand"></i>';
-            }
+        document.getElementById('btn-fullscreen').onclick = () => {
+            if(containerVideo.style.display === 'none') return;
+            !document.fullscreenElement ? containerVideo.requestFullscreen() : document.exitFullscreen();
         };
     </script>
 </body>
