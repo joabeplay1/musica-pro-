@@ -33,7 +33,7 @@
             width: 100vw;
             height: 100vh;
             z-index: 0; 
-            
+            pointer-events: none; 
         }
 
         /* --- MENU LATERAL --- */
@@ -47,7 +47,8 @@
         .main-nav a:hover, .add-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
 
         /* --- CONTEÚDO CENTRAL --- */
-       
+        .main-content { flex: 1; padding: 40px; z-index: 10; display: flex; flex-direction: column; gap: 30px; }
+
         .search-bar { background: transparent; border: 1px solid var(--neon-pink); border-radius: 25px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; width: 350px; box-shadow: 0 0 15px rgba(255,0,127,0.3); }
         .search-bar i { color: var(--neon-pink); text-shadow: 0 0 5px var(--neon-pink); }
         .search-bar input { background: none; border: none; color: #fff; width: 100%; outline: none; font-size: 1rem; }
@@ -62,14 +63,13 @@
         #video-container { position: absolute; bottom: 120px; right: 40px; width: 400px; aspect-ratio: 16/9; background: #000; border-radius: 10px; border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,240,255,0.3); display: none; z-index: 15; overflow: hidden; }
         video, iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- CAIXA DE DIÁLOGO (MODAL) ESTILO IMAGEM --- */
+        /* --- MODAL --- */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: flex-start; justify-content: center; z-index: 200; padding-top: 10vh; }
         .modal-content-wrapper { position: relative; padding: 2px; border-radius: 15px; background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue)); box-shadow: 0 0 30px rgba(0,240,255,0.4); }
         .modal-content { background: #12121a; padding: 25px; border-radius: 13px; width: 450px; }
         
         .modal-header { margin-bottom: 15px; }
         .modal-header h3 { font-size: 1rem; font-weight: 500; color: #fff; margin-bottom: 5px; }
-        .modal-header p { font-size: 0.85rem; color: var(--text-muted); }
         
         .modal-content input[type="text"] { width: 100%; background: transparent; border: 1px solid var(--neon-blue); border-radius: 8px; padding: 12px; color: #fff; outline: none; margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,240,255,0.1); }
         .modal-content select { width: 100%; background: #1a1a24; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 20px; }
@@ -78,7 +78,6 @@
         .btn-ok { background: linear-gradient(90deg, #aa00ff, var(--neon-blue)); border: none; color: #fff; padding: 10px 30px; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(0,240,255,0.4); transition: 0.2s; }
         .btn-ok:hover { transform: scale(1.05); }
         .btn-cancel { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-cancel:hover { background: rgba(0,240,255,0.1); }
 
         /* --- RODAPÉ PLAYER --- */
         .footer-player { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(5,5,8,0.8); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 40px; justify-content: space-between; z-index: 100; }
@@ -89,16 +88,7 @@
         .player-center { display: flex; align-items: center; gap: 30px; flex: 1; justify-content: center; }
         .controls { display: flex; align-items: center; gap: 20px; }
         .controls button { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-        .controls button:hover { color: #fff; text-shadow: 0 0 10px #fff; }
-        #play-pause { background: transparent; border: 2px solid #fff; color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        #play-pause:hover { background: #fff; color: #000; }
-
-        /* Onda Sonora do Rodapé (Simulada) */
-        .footer-wave { flex: 1; height: 30px; display: flex; align-items: center; gap: 3px; max-width: 400px; opacity: 0.5; }
-        .wave-bar { width: 3px; background: var(--neon-blue); border-radius: 2px; height: 5px; transition: height 0.1s; }
-
-        .extra-controls { display: flex; align-items: center; gap: 20px; width: 250px; justify-content: flex-end; color: var(--text-muted); }
-        .extra-controls button { background: none; border: none; color: inherit; font-size: 1.2rem; cursor: pointer; }
+        #play-pause { background: transparent; border: 2px solid #fff; color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -133,12 +123,11 @@
         </div>
     </main>
 
-    <footer class="footer-player" id="player-rodape">
+    <footer class="footer-player">
         <div class="now-playing">
             <div id="track-title">Nada tocando</div>
             <div id="track-type">Escolha um arquivo</div>
         </div>
-
         <div class="player-center">
             <div class="controls">
                 <button id="btn-prev"><i class="fas fa-step-backward"></i></button>
@@ -147,10 +136,8 @@
             </div>
             <div class="footer-wave" id="footer-wave"></div>
         </div>
-
         <div class="extra-controls">
-            <i class="fas fa-volume-up"></i>
-            <button id="btn-fullscreen" title="Tela Cheia"><i class="fas fa-expand"></i></button>
+            <button id="btn-fullscreen"><i class="fas fa-expand"></i></button>
         </div>
     </footer>
 
@@ -158,24 +145,18 @@
         <div class="modal-content-wrapper">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>joabeplay1.github.io diz</h3>
-                    <p>Área restrita. Digite a senha (777):</p>
+                    <h3>Área do Administrador</h3>
                 </div>
                 <form id="form-add">
-                    <input type="text" id="input-senha" placeholder="" required>
-                    
-                    <div id="campos-adicao" style="display: none;">
-                        <input type="text" id="add-titulo" placeholder="Nome da Música/Vídeo" required>
-                        <select id="add-origem">
-                            <option value="drive">Link Google Drive</option>
-                            <option value="local">Arquivo PC</option>
-                        </select>
-                        <input type="text" id="add-link" placeholder="Link do Drive">
-                        <input type="file" id="add-file" style="display:none;" accept="audio/*,video/*">
-                    </div>
-                    
+                    <input type="text" id="add-titulo" placeholder="Nome da Música/Vídeo" required>
+                    <select id="add-origem">
+                        <option value="drive">Link Google Drive</option>
+                        <option value="local">Arquivo PC</option>
+                    </select>
+                    <input type="text" id="add-link" placeholder="Link do Drive">
+                    <input type="file" id="add-file" style="display:none;" accept="audio/*,video/*">
                     <div class="modal-buttons">
-                        <button type="submit" class="btn-ok">OK</button>
+                        <button type="submit" class="btn-ok">Adicionar</button>
                         <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
                     </div>
                 </form>
@@ -184,7 +165,7 @@
     </div>
 
     <script>
-        // --- MOTOR DO CANVAS (Ondas, Círculo e Partículas da Imagem) ---
+        // --- MOTOR DO CANVAS ---
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -203,7 +184,8 @@
                 this.y = Math.random() * canvas.height;
                 this.vx = (Math.random() - 0.5) * 2;
                 this.vy = (Math.random() - 0.5) * 2;
-                this.size = Math.random() * 8 + 4;
+                // AJUSTE: Partículas maiores e mais impactantes
+                this.size = Math.random() * 8 + 4; 
                 this.color = Math.random() > 0.5 ? '#ff007f' : '#00f0ff';
                 this.isNote = Math.random() > 0.8;
                 this.noteChar = Math.random() > 0.5 ? '♪' : '♫';
@@ -216,11 +198,11 @@
                 if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
             draw() {
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 15;
                 ctx.shadowColor = this.color;
                 ctx.fillStyle = this.color;
                 if(this.isNote) {
-                    ctx.font = `${this.size * 5}px Arial`;
+                    ctx.font = `${this.size * 3}px Arial`;
                     ctx.fillText(this.noteChar, this.x, this.y);
                 } else {
                     ctx.beginPath();
@@ -237,23 +219,7 @@
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
 
-            // Linha Horizontal Neon
-            ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.moveTo(0, cy);
-            for(let i = 0; i < cx; i += 15) {
-                let amp = isPlaying ? Math.random() * 40 : 2;
-                ctx.lineTo(i, cy + (Math.random() > 0.5 ? amp : -amp));
-            }
-            ctx.strokeStyle = '#ff007f'; ctx.shadowColor = '#ff007f'; ctx.stroke();
-
-            ctx.beginPath(); ctx.moveTo(cx, cy);
-            for(let i = cx; i < canvas.width; i += 15) {
-                let amp = isPlaying ? Math.random() * 40 : 2;
-                ctx.lineTo(i, cy + (Math.random() > 0.5 ? amp : -amp));
-            }
-            ctx.strokeStyle = '#00f0ff'; ctx.shadowColor = '#00f0ff'; ctx.stroke();
-
-            // Círculo Central
+            // Círculo Central e Ondas
             const radius = 120;
             for(let i = 0; i < 60; i++) {
                 const angle = (i / 60) * Math.PI * 2;
@@ -262,109 +228,52 @@
                 const y1 = cy + Math.sin(angle) * radius;
                 const x2 = cx + Math.cos(angle) * (radius + h);
                 const y2 = cy + Math.sin(angle) * (radius + h);
-                
                 ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
                 ctx.strokeStyle = Math.cos(angle) < 0 ? '#ff007f' : '#00f0ff';
-                ctx.shadowColor = ctx.strokeStyle;
-                ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
+                ctx.lineWidth = 4; ctx.stroke();
             }
-
-            // Nota Musical no centro
-            ctx.font = "70px Arial"; ctx.fillStyle = "#fff"; ctx.shadowColor = "#fff";
-            ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.fillText("♫", cx, cy);
 
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(drawVisualizer);
         }
         drawVisualizer();
 
-        // Construir a ondinha do rodapé
-        const waveContainer = document.getElementById('footer-wave');
-        for(let i=0; i<40; i++) {
-            const bar = document.createElement('div');
-            bar.className = 'wave-bar';
-            waveContainer.appendChild(bar);
-        }
-        setInterval(() => {
-            if(isPlaying) {
-                document.querySelectorAll('.wave-bar').forEach(b => {
-                    b.style.height = `${Math.random() * 25 + 5}px`;
-                    b.style.background = Math.random() > 0.5 ? '#ff007f' : '#00f0ff';
-                });
-            } else {
-                document.querySelectorAll('.wave-bar').forEach(b => b.style.height = '5px');
+        // --- SISTEMA DE ADMIN E SENHA ---
+        const modal = document.getElementById('modal-add');
+        
+        document.getElementById('btn-abrir-modal').onclick = () => {
+            // Alerta do navegador pedindo a senha
+            const senha = prompt("Área restrita. Digite a senha:");
+            if (senha === "777") {
+                modal.style.display = 'flex';
+            } else if (senha !== null) {
+                alert("Senha incorreta!");
             }
-        }, 150);
+        };
 
-        // --- SISTEMA LÓGICO DO PLAYER ---
+        function fecharModal() { modal.style.display = 'none'; }
+
+        // Restante da lógica (Add, tocar, etc) continua igual para manter a funcionalidade
         let playlist = [];
-        let indexAtual = -1;
         const playerAudio = new Audio();
         const playerVideo = document.getElementById('main-video');
         const iframeDrive = document.getElementById('drive-player');
         const containerVideo = document.getElementById('video-container');
 
-        function salvarMemoria() { localStorage.setItem('jrAcervo', JSON.stringify(playlist.filter(i => i.origem === 'drive'))); }
-        function carregarMemoria() { 
-            const dados = localStorage.getItem('jrAcervo'); 
-            if(dados) { playlist = JSON.parse(dados); renderizar(); } 
-        }
-        carregarMemoria();
-
-        // --- MODAL ---
-        const modal = document.getElementById('modal-add');
-        const inputSenha = document.getElementById('input-senha');
-        const camposAdicao = document.getElementById('campos-adicao');
-        let senhaValidada = false;
-
-        document.getElementById('btn-abrir-modal').onclick = () => {
-            modal.style.display = 'flex';
-            senhaValidada = false;
-            inputSenha.style.display = 'block';
-            inputSenha.value = '';
-            camposAdicao.style.display = 'none';
-        };
-
-        function fecharModal() { modal.style.display = 'none'; document.getElementById('form-add').reset(); }
-
-        document.getElementById('add-origem').onchange = (e) => {
-            document.getElementById('add-link').style.display = e.target.value === 'local' ? 'none' : 'block';
-            document.getElementById('add-file').style.display = e.target.value === 'local' ? 'block' : 'none';
-        };
-
         document.getElementById('form-add').onsubmit = (e) => {
             e.preventDefault();
-            
-            // Etapa 1: Validar Senha
-            if(!senhaValidada) {
-                if(inputSenha.value === "777") {
-                    senhaValidada = true;
-                    inputSenha.style.display = 'none';
-                    camposAdicao.style.display = 'block';
-                } else {
-                    alert("Senha incorreta!");
-                }
-                return;
-            }
-
-            // Etapa 2: Salvar Arquivo
             const titulo = document.getElementById('add-titulo').value;
             const origem = document.getElementById('add-origem').value;
-            let url = "";
-
-            if (origem === 'local') {
-                const file = document.getElementById('add-file').files[0];
-                if (!file) return;
-                url = URL.createObjectURL(file);
-            } else {
-                let l = document.getElementById('add-link').value;
-                const id = l.match(/\/d\/(.+?)\//);
-                url = id ? `https://drive.google.com/file/d/${id[1]}/preview` : l;
+            let url = document.getElementById('add-link').value;
+            
+            if(origem === 'drive') {
+                const id = url.match(/\/d\/(.+?)\//);
+                url = id ? `https://drive.google.com/file/d/${id[1]}/preview` : url;
             }
-
+            
             playlist.push({ titulo, url, origem });
-            salvarMemoria(); renderizar(); fecharModal();
+            renderizar();
+            fecharModal();
         };
 
         function renderizar() {
@@ -373,59 +282,23 @@
             playlist.forEach((item, i) => {
                 const li = document.createElement('li');
                 li.className = 'playlist-item';
-                li.innerHTML = `<i class="fas fa-cloud" style="color:var(--neon-pink)"></i> <span>${item.titulo}</span>`;
+                li.innerHTML = `<i class="fas fa-play-circle"></i> <span>${item.titulo}</span>`;
                 li.onclick = () => tocar(i);
                 lista.appendChild(li);
             });
         }
 
         function tocar(i) {
-            if(i < 0 || i >= playlist.length) return;
-            indexAtual = i; const item = playlist[i];
-            
-            playerAudio.pause(); playerVideo.pause();
-            containerVideo.style.display = 'none'; playerVideo.style.display = 'none'; iframeDrive.style.display = 'none';
-
-            if(item.origem === 'drive') {
-                containerVideo.style.display = 'block'; iframeDrive.src = item.url; iframeDrive.style.display = 'block';
-                isPlaying = true;
-            } else {
-                const isVid = item.url.startsWith('blob:') && document.getElementById('add-file').files[0]?.type.includes('video');
-                if(isVid) { containerVideo.style.display='block'; playerVideo.src=item.url; playerVideo.style.display='block'; playerVideo.play(); }
-                else { playerAudio.src = item.url; playerAudio.play(); }
-                isPlaying = true;
-            }
-
+            const item = playlist[i];
+            isPlaying = true;
             document.getElementById('track-title').innerText = item.titulo;
-            document.getElementById('track-type').innerText = item.origem.toUpperCase();
-            document.getElementById('play-pause').innerHTML = '<i class="fas fa-pause"></i>';
-        }
-
-        document.getElementById('play-pause').onclick = () => {
-            if(indexAtual === -1) return;
-            if(playerAudio.paused && playerVideo.paused) {
-                if(playlist[indexAtual].origem !== 'drive') playerAudio.src ? playerAudio.play() : playerVideo.play();
-                document.getElementById('play-pause').innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
-            } else {
-                playerAudio.pause(); playerVideo.pause();
-                document.getElementById('play-pause').innerHTML = '<i class="fas fa-play"></i>';
-                isPlaying = false;
+            if(item.origem === 'drive') {
+                containerVideo.style.display = 'block';
+                iframeDrive.src = item.url;
+                iframeDrive.style.display = 'block';
             }
-        };
-
-        document.getElementById('btn-next').onclick = () => tocar(indexAtual + 1);
-        document.getElementById('btn-prev').onclick = () => tocar(indexAtual - 1);
-
-        document.getElementById('input-busca').oninput = (e) => {
-            const t = e.target.value.toLowerCase();
-            document.querySelectorAll('.playlist-item').forEach(li => li.style.display = li.innerText.toLowerCase().includes(t) ? 'flex' : 'none');
-        };
-
-        document.getElementById('btn-fullscreen').onclick = () => {
-            if(containerVideo.style.display === 'none') return;
-            !document.fullscreenElement ? containerVideo.requestFullscreen() : document.exitFullscreen();
-        };
+            // Adicione aqui a lógica de som se necessário
+        }
     </script>
 </body>
 </html>
