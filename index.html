@@ -6,7 +6,7 @@
     <title>Jesus Reina - Player Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- CSS: Estilos e Cores --- */
+        /* --- CSS: Estilos e Cores (Mantidos) --- */
         :root {
             --bg-body: #111111;
             --bg-card: #1a1a1a;
@@ -19,12 +19,7 @@
             --border-radius-btn: 5px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 
         body {
             background-color: var(--bg-body);
@@ -35,13 +30,9 @@
             overflow: hidden;
         }
 
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
+        .app-container { display: flex; flex: 1; overflow: hidden; }
 
-        /* BARRA LATERAL (SIDEBAR) */
+        /* SIDEBAR */
         .sidebar {
             width: 250px;
             background-color: var(--bg-body);
@@ -51,456 +42,100 @@
             border-right: 1px solid #333;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text-main);
-            margin-bottom: 40px;
-        }
-
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: bold; margin-bottom: 40px; }
         .logo i { color: var(--purple-main); }
 
-        .main-nav ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .main-nav a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: color 0.2s;
-        }
-
-        .main-nav a:hover, .main-nav li.active a { color: var(--text-main); }
+        .main-nav ul { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+        .main-nav a { text-decoration: none; color: var(--text-muted); display: flex; align-items: center; gap: 15px; transition: 0.2s; }
+        .main-nav a:hover { color: var(--text-main); }
 
         .add-btn-sidebar {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            text-align: left;
-            cursor: pointer;
-            padding: 0;
-            width: 100%;
-            transition: color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            background: none; border: none; color: var(--text-muted); font-size: 1rem; 
+            text-align: left; cursor: pointer; width: 100%; display: flex; align-items: center; gap: 15px;
         }
 
-        .add-btn-sidebar:hover { color: var(--text-main); }
-
-        .playlists-section {
-            margin-top: auto;
-            margin-bottom: 20px;
-        }
-
-        .playlists-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .add-btn-icon {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: color 0.2s;
-        }
-
-        .add-btn-icon:hover { color: var(--text-main); }
-
-        .playlist-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .playlist-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .playlist-item:hover { color: var(--text-main); }
-
-        /* CONTEÚDO PRINCIPAL */
-        .content {
-            flex: 1;
-            background-color: var(--bg-body);
-            padding: 30px;
-            overflow-y: auto;
-            scroll-behavior: smooth; /* Ajuda na rolagem suave nativa */
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+        /* CONTEÚDO */
+        .content { flex: 1; padding: 30px; overflow-y: auto; scroll-behavior: smooth; }
 
         .search-bar {
-            display: flex;
-            align-items: center;
-            background-color: #1a1a1a;
-            border-radius: 20px;
-            padding: 5px 15px;
-            width: 300px;
+            display: flex; align-items: center; background-color: #1a1a1a;
+            border-radius: 20px; padding: 5px 15px; width: 300px; margin-bottom: 30px;
         }
+        .search-bar input { background: none; border: none; color: white; padding-left: 10px; width: 100%; outline: none; }
 
-        .search-bar input {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            padding-left: 10px;
-            width: 100%;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .top-icons {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: var(--text-muted);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-main);
-        }
-
-        /* BIBLIOTECA LOCAL (Lista) */
-        .biblioteca-local { 
-            margin-top: 40px;
-            margin-bottom: 30px; 
-            padding-top: 20px; /* Espaço para quando rolar a tela */
-        }
-
-        .lista-musicas {
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius-main);
-            padding: 20px;
-            min-height: 150px;
-        }
-
-        .lista-musicas ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .lista-musicas { background-color: var(--bg-card); border-radius: var(--border-radius-main); padding: 20px; min-height: 150px; }
+        .lista-musicas ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .lista-musicas li {
-            padding: 10px 15px;
-            background-color: #222;
-            border-radius: var(--border-radius-btn);
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 10px 15px; background-color: #222; border-radius: 5px; cursor: pointer;
+            display: flex; align-items: center; gap: 15px;
         }
-
         .lista-musicas li:hover { background-color: #333; }
+        .lista-musicas li.tocando { border-left: 4px solid var(--purple-main); background-color: #282828; }
 
-        /* PLAYER DE RODAPÉ */
+        /* FOOTER PLAYER */
         .footer-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 90px;
-            background-color: rgba(17, 17, 17, 0.95);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            border-top: 1px solid #333;
-            z-index: 10;
+            position: fixed; bottom: 0; width: 100%; height: 90px;
+            background-color: rgba(17, 17, 17, 0.95); display: flex;
+            justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #333;
         }
 
-        .now-playing {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 250px;
-        }
-
-        .track-info .track-title { font-weight: bold; font-size: 1rem; }
-        .track-info .track-artist { color: var(--text-muted); font-size: 0.8rem; }
-
-        .player-controls {
-            flex: 1;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .central-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: var(--text-muted);
-        }
-
-        .central-controls button {
-            background: none;
-            border: none;
-            color: inherit;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .central-controls button:hover { color: var(--text-main); }
-
-        #btn-anterior, #btn-proxima { font-size: 1.2rem; }
-
+        .player-controls { flex: 1; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .central-controls { display: flex; align-items: center; gap: 25px; }
+        .central-controls button { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+        .central-controls button:hover { color: white; }
+        
         #btn-play-pause {
-            background-color: var(--purple-main);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1rem;
-            transition: background 0.2s;
+            background-color: var(--purple-main); color: white; width: 45px; height: 45px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
         }
 
-        #btn-play-pause:hover { background-color: var(--purple-hover); }
+        #progresso { width: 100%; height: 5px; cursor: pointer; accent-color: var(--purple-main); }
 
-        .progress-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
-
-        #progresso {
-            flex: 1;
-            height: 5px;
-            appearance: none;
-            background: #333;
-            border-radius: 3px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        #progresso::-webkit-slider-thumb {
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            background: var(--purple-main);
-            border-radius: 50%;
-        }
-
-        .player-volume {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 250px;
-            justify-content: flex-end;
-            color: var(--text-muted);
-        }
-
-        .volume-control { display: flex; align-items: center; gap: 8px; }
-
-        .volume-bar {
-            width: 100px;
-            height: 5px;
-            appearance: none;
-            background: #333;
-            border-radius: 3px;
-            outline: none;
-        }
-
-        .volume-bar::-webkit-slider-thumb {
-            appearance: none;
-            width: 10px;
-            height: 10px;
-            background: var(--purple-main);
-            border-radius: 50%;
-        }
-
-        /* MODAL ADICIONAR MÚSICA */
+        /* MODAL */
         .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100;
         }
-
-        .modal-content {
-            background-color: var(--bg-modal);
-            padding: 30px;
-            border-radius: var(--border-radius-main);
-            width: 450px;
-            max-width: 90%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        .modal-content { background: var(--bg-modal); padding: 30px; border-radius: 12px; width: 450px; }
+        .modal-content input, .modal-content select {
+            width: 100%; padding: 10px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;
         }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .close-btn:hover { color: var(--text-main); }
-
-        #form-musica {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #form-musica label { font-size: 0.9rem; color: var(--text-muted); }
-
-        #form-musica input, #form-musica textarea {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: var(--text-main);
-            padding: 10px;
-            border-radius: var(--border-radius-btn);
-            width: 100%;
-        }
-
-        .modal-footer {
-            margin-top: 25px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-        }
-
-        .save-btn, .cancel-btn {
-            padding: 10px 20px;
-            border-radius: var(--border-radius-btn);
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .save-btn {
-            background-color: var(--purple-main);
-            color: white;
-            border: none;
-        }
-
-        .cancel-btn {
-            background: none;
-            border: 1px solid var(--text-muted);
-            color: var(--text-main);
-        }
+        .save-btn { background: var(--purple-main); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; width: 100%; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <aside class="sidebar">
-            <div class="logo">
-                <i class="fas fa-wave-square"></i>
-                <span>Jesus Reina</span>
-            </div>
+            <div class="logo"><i class="fas fa-cross"></i> <span>Jesus Reina</span></div>
             <nav class="main-nav">
                 <ul>
-                    <li class="active"><a href="#"><i class="fas fa-home"></i> Início</a></li>
-                    <li><a href="#"><i class="fas fa-book-open"></i> Sua Biblioteca</a></li>
-                    <li>
-                        <button class="add-btn-sidebar" id="btn-abrir-modal-sidebar">
-                            <i class="fas fa-plus"></i> Adicionar Música
-                        </button>
-                    </li>
+                    <li><a href="#"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="#" id="menu-biblioteca"><i class="fas fa-book-open"></i> Sua Biblioteca</a></li>
+                    <li><button class="add-btn-sidebar" id="btn-abrir-modal"><i class="fas fa-plus"></i> Adicionar Música/Vídeo</button></li>
                 </ul>
             </nav>
-            
-            <div class="playlists-section">
-                <div class="playlists-header">
-                    <h3>PLAYLISTS</h3>
-                    <button class="add-btn-icon" id="btn-abrir-modal">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-                <ul class="playlist-list">
-                    <li class="playlist-item"><div style="width:35px; height:35px; background:#333; border-radius:5px;"></div><span>Louvores</span></li>
-                    <li class="playlist-item"><div style="width:35px; height:35px; background:#333; border-radius:5px;"></div><span>Pregações</span></li>
-                </ul>
-            </div>
         </aside>
 
         <main class="content">
-            <div class="top-bar">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar suas músicas...">
-                </div>
-                <div class="top-icons">
-                    <div class="user-profile">
-                        <div style="width:35px; height:35px; background:#444; border-radius:50%;"></div>
-                        <span>Usuário</span>
-                    </div>
-                </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="input-busca" placeholder="Buscar na sua biblioteca...">
             </div>
 
-            <section class="biblioteca-local">
-                <div class="section-header">
-                    <h2>Músicas e Vídeos Adicionados</h2>
-                </div>
+            <section class="biblioteca-local" id="secao-biblioteca">
+                <h2>Sua Coleção</h2>
                 <div class="lista-musicas">
-                    <ul id="playlist">
-                        </ul>
+                    <ul id="playlist"></ul>
                 </div>
             </section>
-            
-            <div style="height: 500px;"></div>
         </main>
     </div>
 
     <footer class="footer-player">
-        <div class="now-playing">
-            <div class="track-info">
-                <div class="track-title" id="player-titulo">Aguardando...</div>
-                <div class="track-artist" id="player-artista">Adicione uma música</div>
-            </div>
+        <div class="track-info">
+            <div id="player-titulo" style="font-weight:bold">Nada tocando</div>
+            <div id="player-artista" style="color:gray; font-size:0.8rem">Selecione um arquivo</div>
         </div>
         
         <div class="player-controls">
@@ -509,165 +144,160 @@
                 <button id="btn-play-pause"><i class="fas fa-play"></i></button>
                 <button id="btn-proxima"><i class="fas fa-forward"></i></button>
             </div>
-            
-            <div class="progress-bar-container">
-                <input type="range" id="progresso" value="0" min="0" max="100">
-            </div>
+            <input type="range" id="progresso" value="0">
         </div>
-        
-        <div class="player-volume">
-            <div class="volume-control">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" class="volume-bar" value="70">
-            </div>
+
+        <div class="volume">
+            <i class="fas fa-volume-up"></i>
         </div>
     </footer>
 
-    <div id="modal-adicionar" class="modal" style="display: none;">
+    <div id="modal-adicionar" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Adicionar ao Catálogo</h2>
-                <button id="btn-fechar-modal" class="close-btn">&times;</button>
-            </div>
-            
+            <h3>Adicionar à Biblioteca</h3>
             <form id="form-musica">
-                <div>
-                    <label>Título da Música/Vídeo:</label>
-                    <input type="text" id="titulo" required placeholder="Ex: Nome do Louvor">
+                <input type="text" id="titulo" placeholder="Título" required>
+                
+                <label style="font-size: 0.8rem; color: gray;">Origem do arquivo:</label>
+                <select id="origem-arquivo">
+                    <option value="local">Arquivo Local (PC)</option>
+                    <option value="drive">Google Drive (Link do Vídeo)</option>
+                </select>
+
+                <div id="campo-local">
+                    <input type="file" id="arquivo-pc" accept="audio/*, video/*">
                 </div>
-                <div>
-                    <label>Ano de Lançamento:</label>
-                    <input type="number" id="ano" placeholder="Ex: 2024">
-                </div>
-                <div>
-                    <label>Arquivo do PC:</label>
-                    <input type="file" id="arquivo-audio" accept="audio/*, video/*" required style="margin-top:5px;">
+                
+                <div id="campo-drive" style="display:none">
+                    <input type="text" id="link-drive" placeholder="Cole o link do vídeo do Google Drive aqui">
                 </div>
 
-                <div class="modal-footer">
-                    <button type="submit" class="save-btn">Salvar</button>
-                    <button type="button" class="cancel-btn" id="btn-fechar-modal-v2">Cancelar</button>
-                </div>
+                <button type="submit" class="save-btn">Salvar na Lista</button>
+                <button type="button" onclick="fecharModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer">Cancelar</button>
             </form>
         </div>
     </div>
 
     <script>
-        // 1. Controle do Modal
-        const modal = document.getElementById('modal-adicionar');
-        const btnAbrirSidebar = document.getElementById('btn-abrir-modal-sidebar');
-        const btnAbrirPlaylist = document.getElementById('btn-abrir-modal');
-        const btnFecharX = document.getElementById('btn-fechar-modal');
-        const btnFecharCancelar = document.getElementById('btn-fechar-modal-v2');
-
-        function abrirModal() { modal.style.display = 'flex'; }
-        function fecharModal() { modal.style.display = 'none'; }
-
-        btnAbrirSidebar.addEventListener('click', abrirModal);
-        btnAbrirPlaylist.addEventListener('click', abrirModal);
-        btnFecharX.addEventListener('click', fecharModal);
-        btnFecharCancelar.addEventListener('click', fecharModal);
-
-        // 2. Motor de Áudio e Lista
-        const formMusica = document.getElementById('form-musica');
-        const listaPlaylist = document.getElementById('playlist');
+        // --- VARIÁVEIS DE CONTROLE ---
+        let filaDeMusicas = []; // Nossa "Fila" organizada
+        let indiceAtual = -1;
         const audioPlayer = new Audio();
-        
-        const btnPlayPause = document.getElementById('btn-play-pause');
-        const iconePlayPause = btnPlayPause.querySelector('i');
-        const tituloRodape = document.getElementById('player-titulo');
-        const artistaRodape = document.getElementById('player-artista');
-        const barraProgresso = document.getElementById('progresso');
 
-        formMusica.addEventListener('submit', function(evento) {
-            evento.preventDefault();
+        // --- ELEMENTOS ---
+        const modal = document.getElementById('modal-adicionar');
+        const playlistUI = document.getElementById('playlist');
+        const btnPlay = document.getElementById('btn-play-pause');
+        const iconePlay = btnPlay.querySelector('i');
 
-            const titulo = document.getElementById('titulo').value;
-            const ano = document.getElementById('ano').value;
-            const arquivo = document.getElementById('arquivo-audio').files[0];
+        // --- FUNÇÕES DE NAVEGAÇÃO ---
+        function abrirModal() { modal.style.display = 'flex'; }
+        function fecharModal() { modal.style.display = 'none'; document.getElementById('form-musica').reset(); }
 
-            if (arquivo) {
-                const urlArquivo = URL.createObjectURL(arquivo);
-
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-music" style="color:var(--purple-main)"></i> <strong>${titulo}</strong> <span style="color:#aaa; font-size:0.8em; margin-left:auto;">${ano}</span>`;
-                
-                li.addEventListener('click', () => {
-                    tocarMusica(urlArquivo, titulo, "Arquivo Local");
-                });
-
-                listaPlaylist.appendChild(li);
-                fecharModal();
-                formMusica.reset();
-            }
+        // Alternar campos Local vs Drive
+        document.getElementById('origem-arquivo').addEventListener('change', (e) => {
+            document.getElementById('campo-local').style.display = e.target.value === 'local' ? 'block' : 'none';
+            document.getElementById('campo-drive').style.display = e.target.value === 'drive' ? 'block' : 'none';
         });
 
-        // 3. Play / Pause
-        function tocarMusica(url, titulo, artista) {
-            audioPlayer.src = url;
-            audioPlayer.play();
-            
-            tituloRodape.textContent = titulo;
-            artistaRodape.textContent = artista;
-            
-            iconePlayPause.classList.replace('fa-play', 'fa-pause');
+        document.getElementById('btn-abrir-modal').onclick = abrirModal;
+
+        // --- ADICIONAR À FILA ---
+        document.getElementById('form-musica').onsubmit = (e) => {
+            e.preventDefault();
+            const titulo = document.getElementById('titulo').value;
+            const origem = document.getElementById('origem-arquivo').value;
+            let url = "";
+
+            if (origem === 'local') {
+                const arquivo = document.getElementById('arquivo-pc').files[0];
+                if (!arquivo) return;
+                url = URL.createObjectURL(arquivo);
+            } else {
+                url = document.getElementById('link-drive').value;
+            }
+
+            const novaMusica = { titulo, url };
+            filaDeMusicas.push(novaMusica);
+            renderizarPlaylist();
+            fecharModal();
+        };
+
+        // --- RENDERIZAR LISTA VISUAL ---
+        function renderizarPlaylist() {
+            playlistUI.innerHTML = "";
+            filaDeMusicas.forEach((musica, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-play"></i> <span>${musica.titulo}</span>`;
+                if (index === indiceAtual) li.classList.add('tocando');
+                li.onclick = () => tocarMusica(index);
+                playlistUI.appendChild(li);
+            });
         }
 
-        btnPlayPause.addEventListener('click', () => {
-            if (!audioPlayer.src) return;
+        // --- MOTOR DO PLAYER ---
+        function tocarMusica(index) {
+            if (index < 0 || index >= filaDeMusicas.length) return;
+            
+            indiceAtual = index;
+            const musica = filaDeMusicas[indiceAtual];
+            
+            audioPlayer.src = musica.url;
+            audioPlayer.play();
+            
+            document.getElementById('player-titulo').textContent = musica.titulo;
+            document.getElementById('player-artista').textContent = "Reproduzindo agora";
+            iconePlay.classList.replace('fa-play', 'fa-pause');
+            renderizarPlaylist();
+        }
 
+        btnPlay.onclick = () => {
             if (audioPlayer.paused) {
                 audioPlayer.play();
-                iconePlayPause.classList.replace('fa-play', 'fa-pause');
+                iconePlay.classList.replace('fa-play', 'fa-pause');
             } else {
                 audioPlayer.pause();
-                iconePlayPause.classList.replace('fa-pause', 'fa-play');
+                iconePlay.classList.replace('fa-pause', 'fa-play');
             }
-        });
+        };
 
-        // 4. Barra de Progresso
-        audioPlayer.addEventListener('timeupdate', () => {
-            if (audioPlayer.duration) {
-                const porcentagem = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                barraProgresso.value = porcentagem;
+        // FUNÇÃO DOS BOTÕES ANTERIOR E PRÓXIMA
+        document.getElementById('btn-proxima').onclick = () => {
+            if (indiceAtual < filaDeMusicas.length - 1) {
+                tocarMusica(indiceAtual + 1);
             }
-        });
+        };
 
-        barraProgresso.addEventListener('input', () => {
-            const tempoDesejado = (barraProgresso.value / 100) * audioPlayer.duration;
-            audioPlayer.currentTime = tempoDesejado;
-        });
+        document.getElementById('btn-anterior').onclick = () => {
+            if (indiceAtual > 0) {
+                tocarMusica(indiceAtual - 1);
+            }
+        };
 
-        // 5. Botão Biblioteca e Busca
-        const linkBiblioteca = document.querySelector('.main-nav a i.fa-book-open').parentElement; 
-        const secaoBiblioteca = document.querySelector('.biblioteca-local');
-        const areaConteudo = document.querySelector('.content');
-
-        linkBiblioteca.addEventListener('click', (evento) => {
-            evento.preventDefault(); 
-            // Rola o conteúdo principal até a seção da biblioteca
-            areaConteudo.scrollTo({
-                top: secaoBiblioteca.offsetTop - 20,
-                behavior: 'smooth'
+        // --- BUSCA E BIBLIOTECA ---
+        document.getElementById('input-busca').oninput = (e) => {
+            const termo = e.target.value.toLowerCase();
+            const itens = playlistUI.querySelectorAll('li');
+            itens.forEach(item => {
+                const texto = item.textContent.toLowerCase();
+                item.style.display = texto.includes(termo) ? "flex" : "none";
             });
-        });
+        };
 
-        const inputBusca = document.querySelector('.search-bar input');
+        document.getElementById('menu-biblioteca').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('secao-biblioteca').scrollIntoView({ behavior: 'smooth' });
+        };
 
-        inputBusca.addEventListener('input', () => {
-            const termoBuscado = inputBusca.value.toLowerCase(); 
-            const musicasNaLista = listaPlaylist.querySelectorAll('li'); 
+        // Atualizar barra de progresso
+        audioPlayer.ontimeupdate = () => {
+            const prog = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            document.getElementById('progresso').value = prog || 0;
+        };
 
-            musicasNaLista.forEach(musica => {
-                const textoMusica = musica.textContent.toLowerCase();
-                
-                if (textoMusica.includes(termoBuscado)) {
-                    musica.style.display = 'flex'; 
-                } else {
-                    musica.style.display = 'none'; 
-                }
-            });
-        });
+        document.getElementById('progresso').oninput = (e) => {
+            audioPlayer.currentTime = (e.target.value / 100) * audioPlayer.duration;
+        };
     </script>
 </body>
 </html>
