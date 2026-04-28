@@ -272,40 +272,65 @@
         function fecharModal() { modal.style.display = 'none'; }
 
         // Restante da lógica (Add, tocar, etc) continua igual para manter a funcionalidade
-        let playlist = [];
+       // Tenta carregar o que já está salvo no navegador. Se não tiver nada, começa vazio.
+// 1. Tenta buscar a lista salva no navegador. Se não houver nada, começa vazia [].
+let playlist = JSON.parse(localStorage.getItem('minha_biblioteca_neon')) || [];
+
+// 2. Se o sistema encontrar links salvos, ele já desenha a lista na tela na hora!
+if (playlist.length > 0) {
+    renderizar();
+}
+
+// Se já tiver algo guardado, mostra na tela assim que o site abrir
+if (playlist.length > 0) {
+    renderizar();
+}
         const playerAudio = new Audio();
         const playerVideo = document.getElementById('main-video');
         const iframeDrive = document.getElementById('drive-player');
         const containerVideo = document.getElementById('video-container');
 
-        document.getElementById('form-add').onsubmit = (e) => {
-            e.preventDefault();
-            const titulo = document.getElementById('add-titulo').value;
-            const origem = document.getElementById('add-origem').value;
-            let url = document.getElementById('add-link').value;
-            
-            if(origem === 'drive') {
-                const id = url.match(/\/d\/(.+?)\//);
-                url = id ? `https://drive.google.com/file/d/${id[1]}/preview` : url;
-            }
-            
-            playlist.push({ titulo, url, origem });
-            renderizar();
-            fecharModal();
-        };
+       // --- FUNÇÃO DE ADICIONAR (SALVA E IDENTIFICA) ---
+document.getElementById('form-add').onsubmit = (e) => {
+    e.preventDefault();
+    const titulo = document.getElementById('add-titulo').value;
+    const origem = document.getElementById('add-origem').value;
+    let url = document.getElementById('add-link').value;
 
-        function renderizar() {
-            const lista = document.getElementById('lista-playlist');
-            lista.innerHTML = "";
-            playlist.forEach((item, i) => {
-                const li = document.createElement('li');
-                li.className = 'playlist-item';
-                li.innerHTML = `<i class="fas fa-play-circle"></i> <span>${item.titulo}</span>`;
-                li.onclick = () => tocar(i);
-                lista.appendChild(li);
-            });
-        }
+    // Identificação automática: se tiver "mp3" é música, senão o sistema trata como vídeo
+    const tipo = url.toLowerCase().includes('mp3') ? 'musica' : 'video';
 
+    if(origem === 'drive') {
+        const id = url.match(/\/d\/(.+?)\//);
+        url = id ? `https://drive.google.com/file/d/${id[1]}/preview` : url;
+    }
+
+    // Adiciona à lista com a etiqueta de tipo
+    playlist.push({ titulo, url, origem, tipo });
+
+    // SALVA NO NAVEGADOR: Guarda a lista para não sumir ao atualizar
+    localStorage.setItem('minha_biblioteca_neon', JSON.stringify(playlist));
+
+    renderizar();
+    fecharModal();
+};
+
+// --- FUNÇÃO DE MOSTRAR NA TELA (COM ÍCONES AUTOMÁTICOS) ---
+function renderizar() {
+    const lista = document.getElementById('lista-playlist');
+    lista.innerHTML = "";
+    playlist.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'playlist-item';
+        
+        // Define se aparece o ícone de música ou de vídeo
+        const icone = item.tipo === 'musica' ? 'fa-music' : 'fa-video';
+        
+        li.innerHTML = `<i class="fas ${icone}"></i> <span>${item.titulo}</span>`;
+        li.onclick = () => tocar(i);
+        lista.appendChild(li);
+    });
+}
         function tocar(i) {
             const item = playlist[i];
             isPlaying = true;
