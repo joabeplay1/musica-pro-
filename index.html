@@ -188,10 +188,18 @@
       <input type="text" id="musicArtist" placeholder="Nome do artista">
       
       <label>Escolher Música (MP3)</label>
-      <input type="file" id="musicFile" accept="audio/*">
+      <div class="upload-row">
+        <input type="file" id="musicFile" accept="audio/*">
+        <button type="button" class="drive-btn" onclick="pickFromDrive('audio')">▲ Drive</button>
+      </div>
+      <span id="driveMusicStatus" class="drive-status-text"></span>
       
       <label>Escolher Capa (Imagem)</label>
-      <input type="file" id="coverFile" accept="image/*">
+      <div class="upload-row">
+        <input type="file" id="coverFile" accept="image/*">
+        <button type="button" class="drive-btn" onclick="pickFromDrive('image')">▲ Drive</button>
+      </div>
+      <span id="driveCoverStatus" class="drive-status-text"></span>
       
       <div class="upload-actions">
         <button onclick="saveUploadedSong()">Salvar</button>
@@ -200,5 +208,8 @@
     </div>
   </div>
 
-<script src="script.js"></script>
+  <script async defer src="https://apis.google.com/js/api.js"></script>
+  <script async defer src="https://accounts.google.com/gsi/client"></script>
+
+  <script src="script.js"></script>
 </body></html>
