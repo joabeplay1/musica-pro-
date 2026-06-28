@@ -1,700 +1,326 @@
-// ==========================================
-// CONFIGURAÇÃO DO GOOGLE DRIVE API
-// ==========================================
-const CLIENT_ID = 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com'; 
-const API_KEY = 'SUA_API_KEY_AQUI'; 
-const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
-
-let accessToken = null;
-let currentPickerTarget = null; // 'audio' ou 'image'
-let driveAudioUrl = null;
-let driveCoverUrl = null;
-
-// --- PARTICLES ENGINE ---
-    const particleCanvas = document.getElementById("particleCanvas");
-    const p_ctx = particleCanvas.getContext("2d");
-
-    particleCanvas.width = window.innerWidth;
-    particleCanvas.height = window.innerHeight;
-
-    let particles = [];
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * particleCanvas.width;
-        this.y = Math.random() * particleCanvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 1.2;
-        this.speedY = (Math.random() - 0.5) * 1.2;
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        if (this.x < 0 || this.x > particleCanvas.width) {
-          this.speedX *= -1;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI App Builder Pro</title>
+    <style>
+        :root {
+            --bg-principal: #0f172a;
+            --bg-card: #1e293b;
+            --texto: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --primaria: #6366f1;
+            --primaria-hover: #4f46e5;
+            --borda: #334155;
         }
-        if (this.y < 0 || this.y > particleCanvas.height) {
-          this.speedY *= -1;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-      }
 
-      draw() {
-        p_ctx.beginPath();
-        p_ctx.fillStyle = "rgba(0,247,255,0.8)";
-        p_ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        p_ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles = [];
-      for (let i = 0; i < 120; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function connectParticles() {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
-          let dx = particles[a].x - particles[b].x;
-          let dy = particles[a].y - particles[b].y;
-          let distance = dx * dx + dy * dy;
-
-          if (distance < 10000) {
-            p_ctx.strokeStyle = "rgba(157,77,255,0.08)";
-            p_ctx.lineWidth = 1;
-            p_ctx.beginPath();
-            p_ctx.moveTo(particles[a].x, particles[a].y);
-            p_ctx.lineTo(particles[b].x, particles[b].y);
-            p_ctx.stroke();
-          }
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            gap: 20px;
         }
-      }
-    }
 
-    function animateParticles() {
-      p_ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      connectParticles();
-      requestAnimationFrame(animateParticles);
-    }
-
-    window.addEventListener("resize", () => {
-      particleCanvas.width = window.innerWidth;
-      particleCanvas.height = window.innerHeight;
-      initParticles();
-    });
-
-    initParticles();
-    animateParticles();
-
-    // --- EQUALIZER ENGINE ---
-    const eqCanvas = document.getElementById("equalizerCanvas");
-    const eqCtx = eqCanvas.getContext("2d");
-
-    eqCanvas.width = 180;
-    eqCanvas.height = 60;
-
-    function drawEqualizer(analyser, dataArray, bufferLength) {
-      eqCtx.clearRect(0, 0, eqCanvas.width, eqCanvas.height);
-      analyser.getByteFrequencyData(dataArray); 
-
-      const barWidth = 5;
-      const barGap = 3;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = Math.max(2, dataArray[i] / 255 * eqCanvas.height * 0.8);
-
-        const gradient = eqCtx.createLinearGradient(0, 0, 0, eqCanvas.height);
-        gradient.addColorStop(0, "#00f7ff");
-        gradient.addColorStop(1, "#9d4dff");
-        eqCtx.fillStyle = gradient;
-
-        eqCtx.fillRect(x, eqCanvas.height - barHeight, barWidth, barHeight);
-        x += barWidth + barGap;
-      }
-    }
-
-    // --- APP STATE & SYSTEM ---
-    let currentSongIndex = 0;
-    let isPlaying = false;
-    let isShuffle = false;
-    let repeatMode = 0; 
-    let favorites = [];
-    let activeView = 'home';
-    let shuffledSongs = []; 
-
-    const audio = document.getElementById('audio');
-    const playBtn = document.getElementById('playBtn');
-    const coverImg = document.getElementById('cover');
-    const titleEl = document.getElementById('title');
-    const artistEl = document.getElementById('artist');
-    const progressEl = document.getElementById('progress');
-    const volumeEl = document.getElementById('volume');
-    const songInfoDiv = document.querySelector('.song-info');
-    const mainContentWrapper = document.getElementById('main-content-wrapper');
-    const sidebarNavButtons = document.querySelectorAll('.sidebar nav button');
-    const searchInput = document.getElementById('searchInput');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const repeatBtn = document.getElementById('repeatBtn');
-    const favoriteBtn = document.getElementById('favoriteBtn');
-
-    let audioCtx;
-    let analyser;
-    let source;
-    let dataArray;
-    let bufferLength;
-
-    const baseSongs = [
-      { id: 0, title: "Neon Dreams", artist: "Pulse Studio", src: "assets/audio/song1.mp3", cover: "https://picsum.photos/id/1040/200/200" },
-      { id: 1, title: "Future Bass", artist: "Synthwave Collective", src: "assets/audio/song2.mp3", cover: "https://picsum.photos/id/1041/200/200" },
-      { id: 2, title: "Night Cyber", artist: "Digital Beats Inc.", src: "assets/audio/song3.mp3", cover: "https://picsum.photos/id/1042/200/200" },
-      { id: 3, title: "Deep Space", artist: "Cosmic Echoes", src: "assets/audio/song4.mp3", cover: "https://picsum.photos/id/1043/200/200" },
-      { id: 4, title: "Electric Pulse", artist: "Neon Waves", src: "assets/audio/song5.mp3", cover: "https://picsum.photos/id/1044/200/200" },
-      { id: 5, title: "Starlight Drive", artist: "Astro Beats", src: "assets/audio/song6.mp3", cover: "https://picsum.photos/id/1045/200/200" },
-      { id: 6, title: "Cybernetic Heart", artist: "Robo Funk", src: "assets/audio/song7.mp3", cover: "https://picsum.photos/id/1046/200/200" },
-      { id: 7, title: "Quantum Leap", artist: "Future Soundscapes", src: "assets/audio/song8.mp3", cover: "https://picsum.photos/id/1047/200/200" },
-    ];
-
-    let savedCustomSongs = [];
-    try {
-      savedCustomSongs = JSON.parse(localStorage.getItem("customSongs")) || [];
-    } catch(e) {
-      console.error(e);
-    }
-
-    const songs = [...baseSongs];
-    savedCustomSongs.forEach((song, idx) => {
-      songs.push({
-        id: baseSongs.length + idx,
-        title: song.title,
-        artist: song.artist,
-        src: song.src,
-        cover: song.cover
-      });
-    });
-
-    // --- Core Player Functions ---
-    function loadSong(index) {
-      if (index < 0 || index >= songs.length) return;
-      currentSongIndex = index;
-      const song = songs[currentSongIndex];
-      audio.src = song.src;
-      coverImg.src = song.cover;
-      titleEl.textContent = song.title;
-      artistEl.textContent = song.artist;
-      progressEl.value = 0; 
-      audio.currentTime = 0; 
-      updateFavoriteButton();
-      playSong();
-      saveState();
-    }
-
-    function playSong() {
-      if (!audioCtx) {
-        initWebAudio(); 
-      }
-      audio.play();
-      isPlaying = true;
-      playBtn.innerHTML = '⏸';
-      songInfoDiv.classList.add('playing');
-      visualizeAudio(); 
-    }
-
-    function pauseSong() {
-      audio.pause();
-      isPlaying = false;
-      playBtn.innerHTML = '▶';
-      songInfoDiv.classList.remove('playing');
-    }
-
-    function togglePlay() {
-      if (isPlaying) {
-        pauseSong();
-      } else {
-        playSong();
-      }
-    }
-
-    function nextSong() {
-      if (repeatMode === 1) {
-        loadSong(currentSongIndex);
-        return;
-      }
-
-      const playlist = isShuffle ? shuffledSongs : songs;
-      currentSongIndex = (currentSongIndex + 1) % playlist.length;
-      loadSong(playlist[currentSongIndex].id);
-
-      if (repeatMode === 0 && currentSongIndex === 0) { 
-        pauseSong();
-      }
-    }
-
-    function prevSong() {
-      if (repeatMode === 1) {
-        loadSong(currentSongIndex);
-        return;
-      }
-
-      const playlist = isShuffle ? shuffledSongs : songs;
-      currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-      loadSong(playlist[currentSongIndex].id);
-    }
-
-    function toggleShuffle() {
-      isShuffle = !isShuffle;
-      shuffleBtn.classList.toggle('active', isShuffle);
-      if (isShuffle) {
-        shuffledSongs = [...songs].sort(() => Math.random() - 0.5);
-      } else {
-        const currentSongId = songs[currentSongIndex].id;
-        currentSongIndex = songs.findIndex(song => song.id === currentSongId);
-      }
-      saveState();
-    }
-
-    function toggleRepeat() {
-      repeatMode = (repeatMode + 1) % 3; 
-      repeatBtn.classList.remove('active');
-      if (repeatMode === 1) {
-        repeatBtn.classList.add('active');
-        repeatBtn.innerHTML = '🔂'; 
-      } else if (repeatMode === 2) {
-        repeatBtn.classList.add('active');
-        repeatBtn.innerHTML = '🔁'; 
-      } else {
-        repeatBtn.innerHTML = '🔁'; 
-      }
-      saveState();
-    }
-
-    function updateProgress() {
-      const { duration, currentTime } = audio;
-      const progressPercent = (currentTime / duration) * 100;
-      progressEl.value = isNaN(progressPercent) ? 0 : progressPercent;
-    }
-
-    function seekProgress() {
-      const seekTime = (progressEl.value / 100) * audio.duration;
-      audio.currentTime = seekTime;
-    }
-
-    function setVolume() {
-      audio.volume = volumeEl.value;
-      saveState();
-    }
-
-    function updateFavoriteButton() {
-      if (currentSongIndex >= songs.length) return;
-      const currentSongId = songs[currentSongIndex].id;
-      if (favorites.includes(currentSongId)) {
-        favoriteBtn.classList.add('active');
-      } else {
-        favoriteBtn.classList.remove('active');
-      }
-    }
-
-    function toggleFavorite() {
-      const currentSongId = songs[currentSongIndex].id;
-      const index = favorites.indexOf(currentSongId);
-      if (index > -1) {
-        favorites.splice(index, 1); 
-      } else {
-        favorites.push(currentSongId); 
-      }
-      updateFavoriteButton();
-      saveState();
-      if (activeView === 'favorites') {
-        renderFavoritesView(); 
-      }
-    }
-
-    // --- Routing & View Management ---
-    function renderView(viewName) {
-      activeView = viewName;
-      const sections = document.querySelectorAll('.view-section');
-      sections.forEach(section => section.classList.remove('active'));
-
-      const targetSection = document.getElementById(`${viewName}-view`);
-      if (targetSection) {
-        targetSection.classList.add('active');
-      } else {
-        document.getElementById('home-view').classList.add('active'); 
-        activeView = 'home';
-      }
-
-      updateSidebarActive(activeView);
-      window.location.hash = activeView; 
-
-      if (viewName === 'library') {
-        renderLibraryView();
-      } else if (viewName === 'favorites') {
-        renderFavoritesView();
-      } else if (viewName === 'search') {
-        document.getElementById('search-results-container').innerHTML = '<p class="empty-state">Start typing in the search bar to find music.</p>';
-        searchInput.value = ''; 
-      }
-    }
-
-    function updateSidebarActive(viewName) {
-      sidebarNavButtons.forEach(button => {
-        if (button.dataset.view === viewName) {
-          button.classList.add('active');
-        } else {
-          button.classList.remove('active');
+        header {
+            text-align: center;
+            margin-bottom: 10px;
         }
-      });
-    }
 
-    function goHome() { renderView('home'); }
-    function openSearch() { renderView('search'); }
-    function openLibrary() { renderView('library'); }
-    function openFavorites() { renderView('favorites'); }
-    function openProfile() { renderView('profile'); }
+        header h1 {
+            font-size: 24px;
+            color: var(--texto);
+        }
 
-    function renderSongCard(song) {
-      return `
-        <div class="card" onclick="loadSong(${song.id})">
-          <img src="${song.cover}" alt="Album Cover">
-          <h4>${song.title}</h4>
-          <p>${song.artist}</p>
+        header p {
+            color: var(--texto-secundario);
+            font-size: 14px;
+        }
+
+        /* Painel de Input */
+        .input-panel {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .api-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .api-group input {
+            flex: 1;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--borda);
+            border-radius: 6px;
+            color: #fff;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            color: var(--texto);
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        button {
+            background: var(--primaria);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--primaria-hover);
+        }
+
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        /* Status Log */
+        .status-log {
+            font-size: 13px;
+            color: #38bdf8;
+            font-family: monospace;
+            min-height: 20px;
+        }
+
+        /* Container de Resultados (Lado a Lado) */
+        .result-container {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            min-height: 250px;
+        }
+
+        .panel-box {
+            width: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-box h2 {
+            font-size: 14px;
+            padding: 10px 15px;
+            background: #111827;
+            border-bottom: 1px solid var(--borda);
+            color: var(--texto-secundario);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        pre {
+            padding: 15px;
+            overflow: auto;
+            flex: 1;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            background: #0b0f19;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+        }
+
+        /* Preview Area */
+        .preview-container {
+            background: var(--bg-card);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .preview-container h2 {
+            font-size: 14px;
+            padding: 10px 15px;
+            background: #111827;
+            border-bottom: 1px solid var(--borda);
+            color: var(--texto-secundario);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>AI App Builder Pro</h1>
+        <p>Arquitetura de Dois Motores: Especificação Avançada & Geração de Código</p>
+    </header>
+
+    <div class="input-panel">
+        <div class="api-group">
+            <input type="password" id="apiKeyInput" placeholder="Insira sua Gemini API Key aqui para testar">
         </div>
-      `;
-    }
+        <textarea id="ideaInput" placeholder="Ex: Um app de lista de tarefas (To-Do) com modo escuro, contador de tarefas concluídas e efeito de confete ao terminar..."></textarea>
+        <button id="buildBtn" onclick="generateApp()">Criar Aplicativo</button>
+        <div id="statusLog" class="status-log">Pronto para iniciar.</div>
+    </div>
 
-    function renderLibraryView() {
-      const libraryContainer = document.getElementById('library-list-container');
-      if (songs.length === 0) {
-        libraryContainer.innerHTML = '<p class="empty-state">Your library is empty.</p>';
-        return;
-      }
-      libraryContainer.innerHTML = songs.map(renderSongCard).join('');
-    }
+    <div class="result-container">
+        <div class="panel-box">
+            <h2>[Motor 1] Especificação Técnica Gerada</h2>
+            <pre id="generatedPrompt">A especificação detalhada da arquitetura aparecerá aqui...</pre>
+        </div>
 
-    function renderFavoritesView() {
-      const favoritesContainer = document.getElementById('favorites-list-container');
-      if (favorites.length === 0) {
-        favoritesContainer.innerHTML = '<p class="empty-state">No favorite songs yet. Click the ❤️ button on the player to add some!</p>';
-        return;
-      }
-      const favoriteSongs = songs.filter(song => favorites.includes(song.id));
-      favoritesContainer.innerHTML = favoriteSongs.map(renderSongCard).join('');
-    }
+        <div class="panel-box">
+            <h2>[Motor 2] Código-Fonte (HTML/CSS/JS)</h2>
+            <pre id="generatedCode">O código limpo gerado pela IA aparecerá aqui...</pre>
+        </div>
+    </div>
 
-    function searchMusic() {
-      const query = searchInput.value.toLowerCase();
-      const searchResultsContainer = document.getElementById('search-results-container');
+    <div class="preview-container">
+        <h2>Visualização em Tempo Real (Iframe Sandbox)</h2>
+        <iframe id="preview" sandbox="allow-scripts"></iframe>
+    </div>
 
-      if (query.length < 2) {
-        searchResultsContainer.innerHTML = '<p class="empty-state">Start typing in the search bar to find music.</p>';
-        return;
-      }
-
-      const filteredSongs = songs.filter(song =>
-        song.title.toLowerCase().includes(query) ||
-        song.artist.toLowerCase().includes(query)
-      );
-
-      if (filteredSongs.length === 0) {
-        searchResultsContainer.innerHTML = '<p class="empty-state">No results found for your search.</p>';
-      } else {
-        searchResultsContainer.innerHTML = filteredSongs.map(renderSongCard).join('');
-      }
-    }
-
-    // --- LocalStorage ---
-    function saveState() {
-      localStorage.setItem('pulseMusicState', JSON.stringify({
-        currentSongIndex,
-        volume: audio.volume,
-        isShuffle,
-        repeatMode,
-        favorites
-      }));
-    }
-
-    function loadState() {
-      const savedState = JSON.parse(localStorage.getItem('pulseMusicState'));
-      if (savedState) {
-        currentSongIndex = savedState.currentSongIndex || 0;
-        audio.volume = savedState.volume !== undefined ? savedState.volume : 0.7;
-        volumeEl.value = audio.volume;
-        isShuffle = savedState.isShuffle || false;
-        repeatMode = savedState.repeatMode || 0;
-        favorites = savedState.favorites || [];
-
-        shuffleBtn.classList.toggle('active', isShuffle);
-        if (isShuffle) {
-          shuffledSongs = [...songs].sort(() => Math.random() - 0.5);
+    <script>
+        // Função utilitária para atualizar o feedback visual do usuário
+        function log(message) {
+            document.getElementById('statusLog').innerText = `⚡ Status: ${message}`;
         }
-        toggleRepeat(); 
-        updateFavoriteButton();
-      }
-      loadSong(currentSongIndex); 
-      pauseSong(); 
-    }
 
-    // --- Web Audio API Initialization ---
-    function initWebAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        source = audioCtx.createMediaElementSource(audio);
+        // MOTOR 1: O Arquiteto & Engenheiro de Prompt integrado
+        async function generatePrompt(userIdea) {
+            log("Motor 1 Ativado: Criando especificação técnica detalhada...");
+            
+            // Simula o comportamento do Agente 1 (Architect) + Agente 2 (Prompt Engineer)
+            // Criando uma super especificação estruturada baseada na ideia crua do usuário
+            let technicalPrompt = `
+Você é um Arquiteto de Software e Engenheiro de Prompt Sênior. 
+Transforme a ideia do usuário em uma especificação técnica perfeita para um desenvolvedor Frontend.
 
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
+Ideia do Usuário: "${userIdea}"
 
-        analyser.fftSize = 256; 
-        bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-      }
-    }
+Gere uma especificação estruturada contendo:
+1. OBJETIVO DO APP: O que ele faz.
+2. REQUISITOS DE INTERFACE: Cores modernas (escuras/claras balanceadas), espaçamentos (padding/gap), bordas arredondadas, design limpo e responsivo.
+3. FLUXO DE COMPORTAMENTO (JS): Quais funções dinâmicas devem existir (ex: cliques, manipulação de estado, persistência local se necessário).
+4. REQUISITOS DE ENTREGA: O código deve vir em um ARQUIVO ÚNICO contendo HTML, CSS (em tag <style>) e JavaScript (em tag <script>). Não use bibliotecas externas a menos que seja estritamente necessário (como FontAwesome por CDN).
 
-    function visualizeAudio() {
-      if (isPlaying && analyser && dataArray) {
-        drawEqualizer(analyser, dataArray, bufferLength);
-        requestAnimationFrame(visualizeAudio);
-      }
-    }
+Retorne APENAS a especificação técnica detalhada em texto corrido ou markdown.
+`;
+            return technicalPrompt;
+        }
 
-    function openFullscreenPlayer() {
-      alert('Fullscreen Player coming soon! Enjoy the music!');
-    }
+        // MOTOR 2: O Gerador de Código realizando a chamada de IA real
+        async function generateCode(technicalSpecification, apiKey) {
+            log("Motor 2 Ativado: Escrevendo e depurando o código final...");
 
-    function updatePlaylist() {
-      const list = document.getElementById("playlist-list");
-      if (list) {
-        list.innerHTML = "";
-        songs.forEach((song, index) => {
-          list.innerHTML += `
-            <li onclick="loadSong(${index})" contenteditable="true" data-omega-editable="true">
-              ${song.title}
-            </li>
-          `;
-        });
-      }
-    }
+            // Endpoint oficial da API do Google Gemini (utilizando o modelo estável gemini-1.5-flash)
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-    function openUploader() {
-      document.getElementById("uploadModal").style.display = "flex";
-    }
+            const promptSistema = `Você é um Code Generator e Debugger IA especializado em construir aplicações Single Page (SPA) funcionais e lindas. 
+Escreva APENAS o código puro (HTML, CSS e JS tudo junto no mesmo arquivo). 
+Importante: Não use blocos de código com markdown (como \`\`\`html) na sua resposta. Retorne diretamente o código começando com <!DOCTYPE html>. 
+Garanta que o código seja interativo, moderno e livre de erros.`;
 
-    function closeUploader() {
-      document.getElementById("uploadModal").style.display = "none";
-    }
+            const payload = {
+                contents: [{
+                    parts: [{ text: `${promptSistema}\n\nSiga estritamente esta especificação técnica para criar o app:\n${technicalSpecification}` }]
+                }]
+            };
 
-    // ==========================================
-    // FLUXO DO MOTOR DO GOOGLE DRIVE PICKER
-    // ==========================================
-    function pickFromDrive(targetType) {
-      currentPickerTarget = targetType;
-      
-      if (CLIENT_ID.includes('SEU_CLIENT_ID')) {
-        alert('Por favor, edite as variáveis CLIENT_ID e API_KEY no topo do ficheiro "script.js" para conectar com o seu console da Google API.');
-        return;
-      }
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-      if (!accessToken) {
-        const tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: SCOPES,
-          callback: (tokenResponse) => {
-            if (tokenResponse && tokenResponse.access_token) {
-              accessToken = tokenResponse.access_token;
-              launchGooglePicker();
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error?.message || "Erro na comunicação com a API do Gemini.");
             }
-          },
-        });
-        tokenClient.requestAccessToken();
-      } else {
-        launchGooglePicker();
-      }
-    }
 
-    function launchGooglePicker() {
-      gapi.load('picker', () => {
-        let view;
-        if (currentPickerTarget === 'audio') {
-          view = new google.picker.View(google.picker.ViewId.AUDIO);
-        } else {
-          view = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
+            const data = await response.json();
+            let rawCode = data.candidates[0].content.parts[0].text;
+
+            // Limpeza de segurança caso a IA use blocos de código markdown mesmo com as instruções
+            rawCode = rawCode.replace(/```html/g, "").replace(/```/g, "").trim();
+
+            return rawCode;
         }
 
-        const picker = new google.picker.PickerBuilder()
-          .addView(view)
-          .setOAuthToken(accessToken)
-          .setDeveloperKey(API_KEY)
-          .setCallback(googlePickerCallback)
-          .build();
-        picker.setVisible(true);
-      });
-    }
+        // Orquestrador do Fluxo Completo
+        async function generateApp() {
+            const idea = document.getElementById("ideaInput").value.trim();
+            const apiKey = document.getElementById("apiKeyInput").value.trim();
+            const buildBtn = document.getElementById("buildBtn");
 
-    function googlePickerCallback(data) {
-      if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
-        const doc = data[google.picker.Response.DOCUMENTS][0];
-        const fileId = doc[google.picker.Document.ID];
-        const fileName = doc[google.picker.Document.NAME];
+            if (!idea) {
+                alert("Por favor, descreva a ideia do seu aplicativo antes de gerar!");
+                return;
+            }
 
-        // Cria o link direto de streaming público do Google Drive
-        const directDriveLink = `https://docs.google.com/uc?export=download&id=${fileId}`;
+            if (!apiKey) {
+                alert("Por favor, insira sua chave de API do Gemini para testar o envio real.");
+                return;
+            }
 
-        if (currentPickerTarget === 'audio') {
-          driveAudioUrl = directDriveLink;
-          const statusSpan = document.getElementById('driveMusicStatus');
-          statusSpan.innerText = `Selecionado do Drive: ${fileName}`;
-          statusSpan.style.display = 'block';
-          
-          if (!document.getElementById("musicTitle").value) {
-            document.getElementById("musicTitle").value = fileName.replace(/\.[^/.]+$/, "");
-          }
-        } else {
-          driveCoverUrl = directDriveLink;
-          const statusSpan = document.getElementById('driveCoverStatus');
-          statusSpan.innerText = `Capa selecionada do Drive!`;
-          statusSpan.style.display = 'block';
+            // Bloqueia botão para evitar duplo clique
+            buildBtn.disabled = true;
+
+            try {
+                // 1. Executa Motor 1 (Geração da Especificação Avançada)
+                const promptGerado = await generatePrompt(idea);
+                document.getElementById("generatedPrompt").textContent = promptGerado;
+
+                // 2. Executa Motor 2 (Geração e Limpeza do Código via API)
+                const codigoGerado = await generateCode(promptGerado, apiKey);
+                document.getElementById("generatedCode").textContent = codigoGerado;
+
+                // 3. Renderiza no Preview (Iframe)
+                log("Renderizando a aplicação no Preview...");
+                const iframe = document.getElementById("preview");
+                iframe.srcdoc = codigoGerado;
+
+                log("Aplicativo criado com sucesso! 🎉");
+
+            } catch (error) {
+                console.error(error);
+                log(`Erro no processo: ${error.message}`);
+                alert(`Ocorreu um erro: ${error.message}\nVerifique sua API Key ou sua conexão.`);
+            } finally {
+                buildBtn.disabled = false;
+            }
         }
-      }
-    }
-
-    // --- SALVAR MÚSICA (Modificado para aceitar local ou Drive) ---
-    function saveUploadedSong() {
-      const title = document.getElementById("musicTitle").value || "Música Importada";
-      const artist = document.getElementById("musicArtist").value || "Artista Desconhecido";
-      const musicFile = document.getElementById("musicFile").files[0];
-      const coverFile = document.getElementById("coverFile").files[0];
-
-      if (!musicFile && !driveAudioUrl) {
-        alert("Por favor, selecione um ficheiro de música (seja Local ou via Google Drive)!");
-        return;
-      }
-
-      // Se a música veio do Google Drive
-      if (driveAudioUrl) {
-        if (coverFile) {
-          const coverReader = new FileReader();
-          coverReader.onload = function(evt) {
-            finalizeSongUpload(title, artist, driveAudioUrl, evt.target.result);
-          };
-          coverReader.readAsDataURL(coverFile);
-        } else if (driveCoverUrl) {
-          finalizeSongUpload(title, artist, driveAudioUrl, driveCoverUrl);
-        } else {
-          finalizeSongUpload(title, artist, driveAudioUrl, "https://picsum.photos/id/1044/200/200");
-        }
-        return;
-      }
-
-      // Fluxo Nativo para Arquivo Local (Base64)
-      const musicReader = new FileReader();
-      musicReader.onload = function(e) {
-        const musicData = e.target.result;
-
-        if (coverFile) {
-          const coverReader = new FileReader();
-          coverReader.onload = function(evt) {
-            finalizeSongUpload(title, artist, musicData, evt.target.result);
-          };
-          coverReader.readAsDataURL(coverFile);
-        } else if (driveCoverUrl) {
-          finalizeSongUpload(title, artist, musicData, driveCoverUrl);
-        } else {
-          finalizeSongUpload(title, artist, musicData, "https://picsum.photos/id/1044/200/200");
-        }
-      };
-
-      musicReader.onerror = function() {
-        alert("Erro ao ler o ficheiro de áudio.");
-      };
-
-      musicReader.readAsDataURL(musicFile);
-    }
-
-    function finalizeSongUpload(title, artist, musicSrc, coverData) {
-      const newSong = {
-        id: songs.length,
-        title: title,
-        artist: artist,
-        src: musicSrc,
-        cover: coverData
-      };
-
-      try {
-        songs.push(newSong);
-
-        let currentCustoms = JSON.parse(localStorage.getItem("customSongs")) || [];
-        currentCustoms.push({
-          title: title,
-          artist: artist,
-          src: musicSrc,
-          cover: coverData
-        });
-        localStorage.setItem("customSongs", JSON.stringify(currentCustoms));
-
-        updatePlaylist();
-        if (activeView === 'library') {
-          renderLibraryView();
-        }
-
-        closeUploader();
-        alert("Música adicionada com sucesso!");
-
-        // Limpa campos e estados do Drive
-        document.getElementById("musicTitle").value = "";
-        document.getElementById("musicArtist").value = "";
-        document.getElementById("musicFile").value = "";
-        document.getElementById("coverFile").value = "";
-        
-        driveAudioUrl = null;
-        driveCoverUrl = null;
-        document.getElementById('driveMusicStatus').style.display = 'none';
-        document.getElementById('driveCoverStatus').style.display = 'none';
-
-      } catch (error) {
-        console.error(error);
-        alert("Erro de espaço: Ficheiros locais em Base64 podem exceder o limite do navegador. Dê preferência por importar músicas via Google Drive para evitar este limite!");
-      }
-    }
-
-    // --- Initialization ---
-    function initApp() {
-      loadState(); 
-      updatePlaylist(); 
-
-      audio.volume = volumeEl.value;
-
-      const hash = window.location.hash.substring(1);
-      if (hash && document.getElementById(`${hash}-view`)) {
-        renderView(hash);
-      } else {
-        renderView('home');
-      }
-
-      audio.addEventListener('timeupdate', updateProgress);
-      audio.addEventListener('ended', nextSong); 
-      progressEl.addEventListener('input', seekProgress);
-      volumeEl.addEventListener('input', setVolume);
-      window.addEventListener('hashchange', () => {
-        const currentHash = window.location.hash.substring(1);
-        if (currentHash) {
-          renderView(currentHash);
-        } else {
-          renderView('home');
-        }
-      });
-
-      document.body.addEventListener('click', () => {
-        if (audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-      }, { once: true });
-    }
-
-    window.addEventListener('load', initApp);
+    </script>
+</body>
+</html>
