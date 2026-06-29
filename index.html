@@ -4,7 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Universal IntelliCalc Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <link class="css-file" rel="stylesheet" href="style.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ADB5">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado com sucesso!', reg.scope))
+                    .catch(err => console.log('Falha ao registrar o Service Worker:', err));
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="calculator-container" data-theme="dark">
@@ -98,7 +111,6 @@
                 <button class="func-button" data-action="decimal">.</button>
                 <button class="equals-button" data-action="calculate">=</button>
             </div>
-
             <div class="mode-specific-buttons programmer-mode hidden">
                 <div class="base-selector">
                     <label><input type="radio" name="base" value="dec" checked> DEC</label>
